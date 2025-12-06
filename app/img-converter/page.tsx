@@ -1,5 +1,9 @@
+import Dropzone from "@/components/Dropzone";
+
 export default function ConvertPage() {
-    return (
-        <div>Test</div>
-    )
+  return (
+    <div className="w-full h-full min-h-screen">
+      <Dropzone />
+    </div>
+  );
 }

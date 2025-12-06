@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">Ben Digital Solutions</h3>
+            <h3 className="font-bold text-lg mb-4">DigiWorks Solutions</h3>
             <p className="text-muted-foreground text-sm">Fast, free, and secure image conversion tool</p>
           </div>
           <div>
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Ben Digital Solutions. All rights reserved.</p>
+          <p>&copy; 2025 DigiWorks Solutions. All rights reserved.</p>
         </div>
       </div>
     </footer>
