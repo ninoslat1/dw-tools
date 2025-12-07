@@ -10,7 +10,7 @@ export default function Header() {
         <CompanyIcon/>
         
         <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2">
-          <Link href="/img-converter" className="flex items-center gap-2">
+          <Link href="/convert" className="flex items-center gap-2">
             Try Now <ArrowRight className="w-4 h-4" />
           </Link>
         </Button>

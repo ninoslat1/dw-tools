@@ -33,7 +33,7 @@ export default function Hero() {
             className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12"
             asChild
           >
-            <Link href="/img-converter" className="flex items-center gap-2">
+            <Link href="/convert" className="flex items-center gap-2">
               Start Converting <ArrowRight className="w-5 h-5" />
             </Link>
           </Button>

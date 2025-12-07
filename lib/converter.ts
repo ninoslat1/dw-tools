@@ -1,36 +1,62 @@
-import sharp, { OutputInfo } from "sharp";
 
-const allowed = ["png", "jpg", "jpeg", "webp", "avif"];
+const allowed = ["png", "jpg", "jpeg", "webp", "avif"] as const;
+type ImageFormat = typeof allowed[number];
 
-export const convertImage = async (i: string, o: string): Promise<string | OutputInfo> => {
-    try {
-        const outputExt = o.split(".").pop()?.toLowerCase();
-        if (!outputExt || !allowed.includes(outputExt)) {
-        return "Invalid output format";
-        }
+// lib/converter.ts
+export const convertImage = async (
+  file: File,
+  format: ImageFormat
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
 
-        let pipeline = sharp(i);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-        switch (outputExt) {
-        case "png":
-            pipeline = pipeline.png();
-            break;
-        case "jpg":
-        case "jpeg":
-            pipeline = pipeline.jpeg();
-            break;
-        case "webp":
-            pipeline = pipeline.webp();
-            break;
-        case "avif":
-            pipeline = pipeline.avif();
-            break;
-        default:
-            return "Unsupported format";
-        }
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Failed to get canvas context'));
+        return;
+      }
 
-        return await pipeline.toFile(o);
-    } catch (err) {
-        return err instanceof Error ? err.message : "Internal Server Error"
-    }
-}
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      const mimeType = format === 'jpg' || format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Conversion failed'));
+          }
+        },
+        mimeType,
+        0.95 // quality untuk JPEG/WebP
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    };
+
+    img.src = url;
+  });
+};
+
+// Helper function untuk download
+export const downloadBlob = (blob: Blob, filename: string) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};

@@ -15,7 +15,7 @@ export default function CTA() {
         </p>
 
         <Button asChild size="lg" className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12 px-8">
-          <Link href="/img-converter" className="flex items-center gap-2">
+          <Link href="/convert" className="flex items-center gap-2">
             Start Converting Now
             <ArrowRight className="w-5 h-5" />
           </Link>
