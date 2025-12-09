@@ -12,17 +12,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { $page } from "@/stores/section"
 
-const items = [
+const items: TSidebarItem[] = [
   {
     title: "Convert",
-    url: "/convert",
     icon: Repeat,
+    state: "convert"
   },
   {
     title: "History",
-    url: "/history",
     icon: History,
+    state: "history"
   },
 ]
 
@@ -36,11 +37,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                 <SidebarMenuButton asChild>
+                    <span onClick={() => $page.set(item.state)} className="flex items-center cursor-pointer">
                       <item.icon className="mr-2" />
                       <span>{item.title}</span>
-                    </a>
+                    </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -54,7 +55,7 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 onClick={() => window.history.back()}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground cursor-pointer focus:bg-transparent hover:bg-transparent"
               >
                 <ArrowLeft className="mr-2" />
                 <span>Back</span>

@@ -28,7 +28,7 @@ export default function Dropzone() {
   const { getDatabaseFile } = new SQLocal({
     databasePath: 'dwimgconv.sqlite3',
     onInit: (sql) => {
-      sql`CREATE TABLE image (uid STRING PRIMARY, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, filename STRING, img BLOB)`;
+      sql`CREATE TABLE image (uid STRING PRIMARY, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, imageUrl STRING, imageBlob BLOB, sourceFormat STRING, targetFormat STRING)`;
     }
   });
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {

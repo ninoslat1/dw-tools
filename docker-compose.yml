@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  dw-tools:
+    image: dw-tools:latest
+    container_name: dw-tools
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL="mysql://root:@host.docker.internal:3306/bromomst"
+      - PRISMA_GENERATE_SOURCEMAP=false
+      - PRISMA_DISABLE_WARNINGS=true
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=bromomst
+      - DB_CONNECTION_LIMIT=10
+      - DB_ACQUIRE_TIMEOUT=30000
+      - DB_CONNECT_TIMEOUT=10000
+
+    ports:
+      - "3000:3000"
+    restart: always
