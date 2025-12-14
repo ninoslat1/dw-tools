@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
+import { DatabaseInitialization } from "@/db/DatabaseInitialization";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <body className="h-screen w-screen overflow-hidden">
-
+            <DatabaseInitialization/>
             <main className="flex-1 h-full w-full overflow-y-auto bg-background">
               {children}
             </main>

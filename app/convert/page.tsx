@@ -2,6 +2,7 @@
 
 import Dropzone from "@/components/Dropzone";
 import History from "@/components/History"
+import HistoryTable from "@/components/HistoryTable";
 import { $page } from "@/stores/section";
 import { useStore } from "@nanostores/react";
 
@@ -9,7 +10,7 @@ export default function ConvertPage() {
   const state = useStore($page)
   return (
     <div className="w-full h-full min-h-screen">
-      {state === "convert" ? <Dropzone /> : <History/>}
+      {state === "convert" ? <Dropzone /> : <HistoryTable/>}
     </div>
   );
 }

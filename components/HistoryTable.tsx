@@ -16,6 +16,7 @@ import { ConversionTableSchema } from './ConversionTableSchema'
 import { Card } from './ui/card'
 import { Button } from './ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { conversionService } from '@/services/conversion'
 
 const HistoryTable = () => {
   const [conversions, setConversions] = useState<TConversionRecord[]>([])

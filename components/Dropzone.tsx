@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef, DragEvent } from "react"
+import { useState, useRef, useEffect, DragEvent } from "react"
 import { Card } from "@/components/ui/card"
-import { Upload, X, RefreshCw, Download, Check, Loader2 } from "lucide-react"
+import { Upload, X, Download, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -15,22 +15,47 @@ import {
   SelectLabel,
 } from "@/components/ui/select"
 import { convertImage, downloadBlob } from "@/lib/converter"
-import { SQLocal } from 'sqlocal';
+import { conversionService } from "@/services/conversion"
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [selectedFormat, setSelectedFormat] = useState<"png" | "jpeg" | "jpg" | "webp" | "avif" | "">("")
-  const inputRef = useRef<HTMLInputElement | null>(null)
   const [isConverting, setIsConverting] = useState(false)
-  const availableFormat = ["png", "jpeg", "jpg", "webp"]
+  const [dbReady, setDbReady] = useState(false)
+  const [getDatabaseFile, setGetDatabaseFile] = useState<(() => Promise<File>) | null>(null)
+  
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
-  const { getDatabaseFile } = new SQLocal({
-    databasePath: 'dwimgconv.sqlite3',
-    onInit: (sql) => {
-      sql`CREATE TABLE image (uid STRING PRIMARY, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, imageUrl STRING, imageBlob BLOB, sourceFormat STRING, targetFormat STRING)`;
-    }
-  });
+
+  // Initialize database ONLY on client-side
+  useEffect(() => {
+    let mounted = true;
+
+    const initDB = async () => {
+      try {
+        // Dynamic import sqlocal
+        const { SQLocal } = await import('sqlocal');
+        
+        if (mounted) {
+          const db = new SQLocal({ databasePath: 'dwimgconv.sqlite3' });
+          setGetDatabaseFile(() => db.getDatabaseFile);
+          setDbReady(true);
+          console.log('Database initialized successfully');
+        }
+      } catch (error) {
+        console.error('Failed to initialize database:', error);
+      }
+    };
+
+    initDB();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     const selected = e.dataTransfer.files?.[0]
@@ -50,26 +75,34 @@ export default function Dropzone() {
   }
 
   const handleConvert = async () => {
-    // if (!file || !selectedFormat) return;
+    if (!file || !selectedFormat || !getDatabaseFile) return;
 
-    const databaseFile = await getDatabaseFile();
-    if(databaseFile) {
+    setIsConverting(true);
+    try {
+      const databaseFile = await getDatabaseFile();
       
+      if (databaseFile) {
+        const blob = await convertImage(file, selectedFormat);
+        const originalName = file.name.split('.').slice(0, -1).join('.');
+        const newFilename = `${originalName}.${selectedFormat}`;
+        
+        await conversionService.cacheConversion({
+          uid: crypto.randomUUID(),
+          imageUrl: newFilename,
+          imageBlob: new Uint8Array(await blob.arrayBuffer()),
+          sourceFormat: file.type,
+          targetFormat: selectedFormat,
+          timestamp: new Date().toISOString()
+        });
+
+        downloadBlob(blob, newFilename);
+      }
+    } catch (error) {
+      console.error('Conversion failed:', error);
+      alert('Failed to convert image. Please try again.');
+    } finally {
+      setIsConverting(false);
     }
-
-    // setIsConverting(true);
-    // try {
-    //   const blob = await convertImage(file, selectedFormat);
-    //   const originalName = file.name.split('.').slice(0, -1).join('.');
-    //   const newFilename = `${originalName}.${selectedFormat}`;
-      
-    //   downloadBlob(blob, newFilename);
-    // } catch (error) {
-    //   console.error('Conversion failed:', error);
-    //   alert('Failed to convert image. Please try again.');
-    // } finally {
-    //   setIsConverting(false);
-    // }
   };
 
   return (
@@ -81,7 +114,14 @@ export default function Dropzone() {
           <p className="text-lg text-muted-foreground">Drag and drop your image below</p>
         </div>
 
-        {!file ? (
+        {!dbReady && (
+          <div className="text-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Initializing database...</p>
+          </div>
+        )}
+
+        {dbReady && !file ? (
           <Card
             className="
               border-2 border-dashed border-border p-12 bg-card/50 
@@ -122,7 +162,7 @@ export default function Dropzone() {
               <Button className="mt-6">Select File</Button>
             </div>
           </Card>
-        ) : (
+        ) : dbReady && file ? (
           <Card className="p-8 bg-card border border-border">
             <div className="space-y-6">
 
@@ -176,18 +216,6 @@ export default function Dropzone() {
                   <X className="w-4 h-4" /> Remove
                 </Button>
 
-                {/* <Button
-                  variant="outline"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    openFileDialog
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Change Image
-                </Button> */}
-
                 <Button 
                   className="flex items-center gap-2 flex-1 sm:flex-none" 
                   onClick={handleConvert}
@@ -209,7 +237,7 @@ export default function Dropzone() {
 
             </div>
           </Card>
-        )}
+        ) : null}
 
       </div>
     </section>
