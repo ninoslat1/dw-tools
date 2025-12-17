@@ -16,6 +16,6 @@ export const conversionService = {
       return await db
         .selectFrom('image')
         .select(['imageBlob', 'targetFormat', "uid", "imageUrl", "timestamp", "sourceFormat"])
-        .executeTakeFirst()
+        .execute()
     }
 }

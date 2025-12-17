@@ -29,7 +29,6 @@ export default function Dropzone() {
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
 
-  // Initialize database ONLY on client-side
   useEffect(() => {
     let mounted = true;
 

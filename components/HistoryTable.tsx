@@ -28,27 +28,41 @@ const HistoryTable = () => {
   const [isLoading, setIsLoading] = useState(true)
   const columnHelper = createColumnHelper<TConversionRecord>()
 
-  const loadConversionHistory = () => {
-    try {
-      const storedData = localStorage.getItem("conversionHistory")
-      if (storedData) {
-        const history = JSON.parse(storedData)
-        const processedHistory = history.map((item: any) => ({
-          ...item,
-          imageUrl: item.imageUrl || URL.createObjectURL(new Blob([item.imageBlob])),
-        }))
-        setConversions(processedHistory)
-      } else {
-        setConversions(generateDummyData())
-      }
-    } catch (error) {
-      console.error("Failed to load conversion history:", error)
-      setConversions(generateDummyData())
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const loadConversionHistory = async () => {
+      try {
+        const storedData = await conversionService.getConversion();
+        
+        if (storedData && storedData.length > 0) {
+          const processedHistory: TConversionRecord[] = storedData.map((item: any) => {
+            let finalUrl = "";
 
+            if (item.imageBlob) {
+              try {
+                const blob = new Blob([item.imageBlob], { 
+                  type: `image/${item.targetFormat.toLowerCase()}` 
+                });
+                finalUrl = URL.createObjectURL(blob);
+              } catch (e) {
+                console.error("Gagal membuat Blob URL:", e);
+              }
+            }
+
+            return {
+              ...item,
+              id: item.uid,
+              timestamp: new Date(item.timestamp).getTime(),
+              imageUrl: finalUrl,
+            };
+          });
+
+          setConversions(processedHistory);
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error("Failed to load conversion history:", error);
+        // setConversions(generateDummyData());
+      }
+  }
   const handleDelete = (id: string) => {
     const updated = conversions.filter((conv) => conv.id !== id)
     setConversions(updated)
