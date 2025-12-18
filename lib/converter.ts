@@ -2,7 +2,6 @@
 const allowed = ["png", "jpg", "jpeg", "webp", "avif"] as const;
 type ImageFormat = typeof allowed[number];
 
-// lib/converter.ts
 export const convertImage = async (
   file: File,
   format: ImageFormat
@@ -49,7 +48,6 @@ export const convertImage = async (
   });
 };
 
-// Helper function untuk download
 export const downloadBlob = (blob: Blob, filename: string) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -60,3 +58,10 @@ export const downloadBlob = (blob: Blob, filename: string) => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
+
+export const detectMimeType = (bytes: Uint8Array) => {
+  if (bytes[0] === 0x89 && bytes[1] === 0x50) return "image/png"
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return "image/jpeg"
+  if (bytes[0] === 0x52 && bytes[1] === 0x49) return "image/webp"
+  return "application/octet-stream"
+}

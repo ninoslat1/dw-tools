@@ -57,10 +57,11 @@ const HistoryTable = () => {
 
           setConversions(processedHistory);
           setIsLoading(false)
+        } else {
+          setIsLoading(false)
         }
       } catch (error) {
         console.error("Failed to load conversion history:", error);
-        // setConversions(generateDummyData());
       }
   }
   const handleDelete = (id: string) => {
@@ -101,7 +102,7 @@ const HistoryTable = () => {
     )
   }
 
-  if (conversions.length === 0) {
+  if (table.getAllLeafColumns().length === 0) {
     return (
       <Card className="p-12 text-center">
         <h3 className="text-lg font-semibold mb-2">No conversions yet</h3>
@@ -116,8 +117,7 @@ const HistoryTable = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <Card className="overflow-hidden">
+    <div className="space-y-4 min-h-screen">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/50">
@@ -139,7 +139,9 @@ const HistoryTable = () => {
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
+              {
+              table.getRowModel().rows.length > 0 ? 
+              (table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-6 py-4">
@@ -147,13 +149,19 @@ const HistoryTable = () => {
                     </td>
                   ))}
                 </tr>
-              ))}
+              ))) : (
+                <tr>
+                  <td colSpan={table.getAllLeafColumns().length} className="text-center py-10">
+                    No conversion history
+                  </td>
+                </tr>
+              )
+              }
             </tbody>
           </table>
         </div>
-      </Card>
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 p-4">
         <div className="text-sm text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
