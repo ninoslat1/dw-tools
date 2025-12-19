@@ -14,11 +14,9 @@ export default function Hero() {
           </span>
         </div>
 
-        {/* Headline */}
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance leading-tight">
-          Convert your images
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent"> instantly</span>
-        </h1>
+        <p className="mb-4 text-5xl font-semibold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+          DigiWorks <span className="text-primary">PicX</span>
+        </p>
 
         {/* Subheadline */}
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 text-balance">

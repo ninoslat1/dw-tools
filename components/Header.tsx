@@ -9,6 +9,10 @@ export default function Header() {
       <nav className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <CompanyIcon/>
         
+        <Link href="/docs" className="flex items-center gap-2">
+            Documentation
+          </Link>
+
         <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2">
           <Link href="/convert" className="flex items-center gap-2">
             Try Now <ArrowRight className="w-4 h-4" />

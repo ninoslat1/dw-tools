@@ -1,4 +1,5 @@
-import { docs } from 'fumadocs-mdx:collections/server';
+import 'server-only';
+import { docs } from '@/.source/server';
 import { loader } from 'fumadocs-core/source';
 
 export const source = loader({

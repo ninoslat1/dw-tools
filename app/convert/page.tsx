@@ -1,7 +1,6 @@
 "use client"
 
 import Dropzone from "@/components/Dropzone";
-import History from "@/components/History"
 import HistoryTable from "@/components/HistoryTable";
 import { $page } from "@/stores/section";
 import { useStore } from "@nanostores/react";

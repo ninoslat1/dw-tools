@@ -21,7 +21,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "fumadocs-mdx:collections/*": [".source/*"]
+      "fumasource/*": [".source/*"]
     }
   },
   "include": [
