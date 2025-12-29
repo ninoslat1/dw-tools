@@ -25,6 +25,12 @@ export const convertImage = async (
       URL.revokeObjectURL(url);
 
       const mimeType = format === 'jpg' || format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
+      const qualityMap: Partial<Record<ImageFormat, number>> = {
+        jpg: 0.9,
+        jpeg: 0.9,
+        webp: 0.85,
+        avif: 0.8,
+      }
       
       canvas.toBlob(
         (blob) => {
@@ -35,7 +41,7 @@ export const convertImage = async (
           }
         },
         mimeType,
-        0.95 // quality untuk JPEG/WebP
+        qualityMap[format]
       );
     };
 

@@ -19,7 +19,8 @@ import { conversionService } from "@/services/conversion"
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  // const [preview, setPreview] = useState<string | null>(null)
+  const [isDownload, setIsDownload] = useState<boolean>(false)
   const [selectedFormat, setSelectedFormat] = useState<"png" | "jpeg" | "jpg" | "webp" | "avif" | "">("")
   const [isConverting, setIsConverting] = useState(false)
   const [dbReady, setDbReady] = useState(false)
@@ -28,6 +29,32 @@ export default function Dropzone() {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          const blob = item.getAsFile()
+          if (!blob) continue
+
+          const ext = blob.type.split("/")[1] || "png"
+          const file = new File([blob], `pasted-image.${ext}`, {
+            type: blob.type,
+          })
+
+          setFile(file)
+          return
+        }
+      }
+    }
+
+    window.addEventListener("paste", handlePaste)
+    return () => window.removeEventListener("paste", handlePaste)
+  }, [])
+
 
   useEffect(() => {
     let mounted = true;
@@ -60,7 +87,7 @@ export default function Dropzone() {
     const selected = e.dataTransfer.files?.[0]
     if (selected) {
       setFile(selected)
-      setPreview(URL.createObjectURL(selected))
+      // setPreview(URL.createObjectURL(selected))
     }
   }
 
@@ -94,6 +121,7 @@ export default function Dropzone() {
           timestamp: new Date().toISOString()
         });
 
+        setIsDownload(true)
         downloadBlob(blob, newFilename);
       }
     } catch (error) {
@@ -140,7 +168,7 @@ export default function Dropzone() {
                 const selected = e.target.files?.[0]
                 if (selected) {
                   setFile(selected)
-                  setPreview(URL.createObjectURL(selected))
+                  // setPreview(URL.createObjectURL(selected))
                 }
               }}
             />
@@ -208,7 +236,7 @@ export default function Dropzone() {
                   variant="outline"
                   onClick={() => {
                     setFile(null)
-                    setPreview(null)
+                    // setPreview(null)
                   }}
                   className="flex items-center gap-2"
                 >
@@ -227,8 +255,19 @@ export default function Dropzone() {
                     </>
                   ) : (
                     <>
-                      <Download className="w-4 h-4" />
-                      Start Converting
+                      {isDownload == false && 
+                        <>
+                          <Download className="w-4 h-4" />
+                          Start Converting
+                        </>
+                      }
+
+                      {isDownload == true &&
+                        <>
+                          <Download className="w-4 h-4" />
+                          Download
+                        </>
+                      }
                     </>
                   )}
                 </Button>

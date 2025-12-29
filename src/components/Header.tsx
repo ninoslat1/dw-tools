@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import CompanyIcon from "./CompanyIcon"
 import { Link } from "@tanstack/react-router"
+import { $page } from "@/stores/$store"
 
 export default function Header() {
   return (
@@ -13,7 +14,7 @@ export default function Header() {
             Documentation
           </Link>
 
-        <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2">
+        <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2" onClick={() => $page.set("convert")}>
           <Link to="/convert" className="flex items-center gap-2">
             Try Now <ArrowRight className="w-4 h-4" />
           </Link>

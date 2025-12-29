@@ -1,6 +1,5 @@
 'use client'
 
-import { History, Repeat, ArrowLeft } from "lucide-react"
 
 import {
   Sidebar,
@@ -13,21 +12,30 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { $page } from "@/stores/$store"
+import { useRef } from "react"
+import { WorkflowIcon, type WorkflowIconHandle } from "./ui/workflow"
+import { HistoryIcon, type HistoryIconHandle } from "./ui/history"
 
-const items: TSidebarItem[] = [
+
+export function AppSidebar() {
+  const workflowRef = useRef<WorkflowIconHandle>(null)
+  const historyRef = useRef<HistoryIconHandle>(null)
+
+  const items: TSidebarItem[] = [
   {
     title: "Convert",
-    icon: Repeat,
-    state: "convert"
+    Icon: WorkflowIcon,
+    ref: workflowRef,
+    state: "convert",
   },
   {
     title: "History",
-    icon: History,
-    state: "history"
+    Icon: HistoryIcon,
+    ref: historyRef,
+    state: "history",
   },
 ]
 
-export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent className="flex flex-col h-full">
@@ -37,9 +45,18 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                 <SidebarMenuButton asChild>
-                    <span onClick={() => $page.set(item.state)} className="flex items-center cursor-pointer">
-                      <item.icon className="mr-2" />
+                  <SidebarMenuButton
+                    onMouseEnter={() => item.ref.current?.startAnimation()}
+                    onMouseLeave={() => item.ref.current?.stopAnimation()}
+                    onFocus={() => item.ref.current?.startAnimation()}
+                    onBlur={() => item.ref.current?.stopAnimation()}
+                    asChild
+                  >
+                    <span
+                      onClick={() => $page.set(item.state)}
+                      className="flex items-center cursor-pointer"
+                    >
+                      <item.Icon ref={item.ref} className="mr-2" size={16} />
                       <span>{item.title}</span>
                     </span>
                   </SidebarMenuButton>
@@ -50,7 +67,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* BOTTOM SECTION */}
-        <div className="mt-auto p-4">
+        {/* <div className="mt-auto p-4">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -62,7 +79,7 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </div>
+        </div> */}
       </SidebarContent>
     </Sidebar>
   )

@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_convert/convert/')({
 function App() {
   const state = useStore($page)
   return (
-    <div className="w-full h-full min-h-screen">
+    <div>
       {state === "convert" ? <Dropzone /> : <HistoryTable/>}
     </div>
   );

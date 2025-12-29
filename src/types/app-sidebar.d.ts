@@ -1,5 +1,6 @@
 type TSidebarItem = {
     title: string,
-    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
-    state: "convert" | "history"
+    state: "convert" | "history",
+    Icon: React.ForwardRefExoticComponent<any>
+    ref: React.RefObject<any>
 }
