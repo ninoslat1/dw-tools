@@ -1,7 +1,7 @@
 // db/sqlocal.ts
 'use client'
 
-import { SQLocal } from 'sqlocal'
+import { SQLocal } from 'sqlocal';
 
 let sqlocalPromise: Promise<SQLocal> | null = null
 
@@ -11,7 +11,7 @@ export function getSQLocal(): Promise<SQLocal> {
   sqlocalPromise = (async () => {
     const db = new SQLocal({
       databasePath: 'dwimgconv.sqlite3',
-      verbose: true,
+      verbose: false,
     })
 
     // init schema sekali

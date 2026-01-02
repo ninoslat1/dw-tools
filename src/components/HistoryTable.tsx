@@ -1,6 +1,4 @@
-
-
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   createColumnHelper,
   flexRender,
@@ -10,88 +8,144 @@ import {
   getSortedRowModel,
   type SortingState,
   type PaginationState,
+  type ColumnFiltersState,
+  getFilteredRowModel,
 } from "@tanstack/react-table"
 import { Card } from './ui/card'
 import { Button } from './ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
+import { Input } from './ui/input'
+
+// ✅ 1. Pindahkan columnHelper ke luar component
+const columnHelper = createColumnHelper<TRecord>()
 
 const HistoryTable = () => {
-  const [conversions, setConversions] = useState<TConversionRecord[]>([])
+  const [conversions, setConversions] = useState<TRecord[]>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   })
   const [isLoading, setIsLoading] = useState(true)
-  const columnHelper = createColumnHelper<TConversionRecord>()
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [nameFilter, setNameFilter] = useState('')
 
-  const loadConversionHistory = async () => {
-      try {
-        const storedData = await conversionService.getConversion();
-        
-        if (storedData && storedData.length > 0) {
-          const processedHistory: TConversionRecord[] = storedData.map((item: any) => {
-            let finalUrl = "";
+  // ✅ 2. Wrap dengan useCallback
+  const loadConversionHistory = useCallback(async () => {
+    try {
+      const storedData = await conversionService.getConversion();
+      
+      if (storedData && storedData.length > 0) {
+        const processedHistory: TRecord[] = storedData.map((item: any) => {
+          let finalUrl = "";
+          let blob: Blob | null = null;
 
-            if (item.imageBlob) {
-              try {
-                const blob = new Blob([item.imageBlob], { 
-                  type: `image/${item.targetFormat.toLowerCase()}` 
-                });
-                finalUrl = URL.createObjectURL(blob);
-              } catch (e) {
-                console.error("Gagal membuat Blob URL:", e);
-              }
+          if (item.imageBlob) {
+            try {
+              blob = new Blob([item.imageBlob], { 
+                type: `image/${item.targetFormat.toLowerCase()}` 
+              });
+              finalUrl = URL.createObjectURL(blob);
+            } catch (e) {
+              console.error("Gagal membuat Blob URL:", e);
             }
+          }
 
-            return {
-              ...item,
-              id: item.uid,
-              timestamp: new Date(item.timestamp).getTime(),
-              imageUrl: finalUrl,
-            };
-          });
+          const filename = `${item.imageUrl}`;
 
-          setConversions(processedHistory);
-          setIsLoading(false)
-        } else {
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.error("Failed to load conversion history:", error);
+          return {
+            id: item.uid,
+            timestamp: new Date(item.timestamp).getTime(),
+            sourceFormat: item.sourceFormat,
+            targetFormat: item.targetFormat,
+            filename,
+            imageBlob: blob!,
+            imageUrl: finalUrl,
+          };
+        });
+
+        setConversions(processedHistory);
       }
-  }
-  const handleDelete = (id: string) => {
-    const updated = conversions.filter((conv) => conv.id !== id)
-    setConversions(updated)
-    localStorage.setItem("conversionHistory", JSON.stringify(updated))
-  }
+    } catch (error) {
+      console.error("Failed to load conversion history:", error);
+    } finally {
+      setIsLoading(false)
+    }
+  }, []) // ← Empty deps
+  
+  const handleDelete = useCallback(async (id: string) => {
+    try {
+      setConversions((prev) => {
+        const record = prev.find((c) => c.id === id)
+        if (record?.imageUrl) {
+          URL.revokeObjectURL(record.imageUrl)
+        }
+        return prev.filter((c) => c.id !== id)
+      })
 
-  const handleDownload = (record: TConversionRecord) => {
+      await conversionService.deleteConversion(id)
+    } catch (error) {
+      console.error("Failed to delete conversion:", error)
+    }
+  }, [])
+
+  // ✅ 3. Fix filter - tidak perlu split
+  const filteredConversions = useMemo(() => {
+    if (!nameFilter) return conversions
+    
+    return conversions.filter((conversion) => {
+      return conversion.filename.toLowerCase().includes(nameFilter.toLowerCase())
+    })
+  }, [conversions, nameFilter])
+
+  // ✅ 4. Fix type dan download filename
+  const handleDownload = useCallback((record: TConversionRecord) => {
     const link = document.createElement("a")
     link.href = record.imageUrl
-    link.download = record.imageUrl
+    link.download = record.imageUrl // ← Gunakan filename
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }
+  }, [])
+
+  const columns = useMemo(
+    () => ConversionTableSchema(columnHelper, handleDelete, handleDownload),
+    [handleDelete, handleDownload]
+  )
 
   const table = useReactTable({
-    data: conversions,
-    columns: ConversionTableSchema(columnHelper, handleDelete, handleDownload),
-    state: { sorting, pagination },
+    data: filteredConversions,
+    columns,
+    state: { sorting, pagination, columnFilters },
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
 
   useEffect(() => {
+    setPagination(prev => ({ ...prev, pageIndex: 0 }))
+  }, [nameFilter])
+
+  useEffect(() => {
     loadConversionHistory()
-  }, [])
+  }, [loadConversionHistory])
+
+  // ✅ 5. Cleanup Blob URLs on unmount
+  useEffect(() => {
+    return () => {
+      conversions.forEach((conv) => {
+        if (conv.imageUrl) {
+          URL.revokeObjectURL(conv.imageUrl)
+        }
+      })
+    }
+  }, [conversions])
 
   if (isLoading) {
     return (
@@ -101,7 +155,7 @@ const HistoryTable = () => {
     )
   }
 
-  if (table.getAllLeafColumns().length === 0) {
+  if (conversions.length === 0) {
     return (
       <Card className="p-12 text-center">
         <h3 className="text-lg font-semibold mb-2">No conversions yet</h3>
@@ -117,48 +171,73 @@ const HistoryTable = () => {
 
   return (
     <div className="space-y-4 min-h-screen py-4">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b border-border bg-muted/50">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="px-6 py-3 text-left font-semibold text-foreground"
-                      onClick={header.column.getToggleSortingHandler()}
-                      style={{
-                        cursor: header.column.getCanSort() ? "pointer" : "default",
-                      }}
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {
-              table.getRowModel().rows.length > 0 ? 
-              (table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))) : (
-                <tr>
-                  <td colSpan={table.getAllLeafColumns().length} className="text-center py-10">
-                    No conversion history
-                  </td>
-                </tr>
-              )
-              }
-            </tbody>
-          </table>
+      <div className="overflow-x-auto space-y-4">
+        <div className="flex gap-2 items-center">
+          <Input
+            type="text"
+            placeholder="Filter by file name..."
+            value={nameFilter}
+            onChange={(e) => setNameFilter(e.target.value)}
+            className="max-w-sm"
+          />
+          {nameFilter && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setNameFilter('')}
+            >
+              Clear
+            </Button>
+          )}
         </div>
+
+        {nameFilter && (
+          <div className="text-sm text-muted-foreground">
+            Showing {filteredConversions.length} of {conversions.length} results
+          </div>
+        )}
+
+        <table className="w-full text-sm">
+          <thead className="border-b border-border bg-muted/50">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="px-6 py-3 text-left font-semibold text-foreground"
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{
+                      cursor: header.column.getCanSort() ? "pointer" : "default",
+                    }}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {
+            table.getRowModel().rows.length > 0 ? 
+            (table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-6 py-4">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))) : (
+              <tr>
+                <td colSpan={table.getAllLeafColumns().length} className="text-center py-10">
+                  No conversion history
+                </td>
+              </tr>
+            )
+            }
+          </tbody>
+        </table>
+      </div>
 
       <div className="flex items-center justify-between gap-4 p-4">
         <div className="text-sm text-muted-foreground">
