@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { useRef } from 'react'
+import { Toaster } from 'sonner'
 
 export const Route = createFileRoute('/_convert/convert')({
   component: ConvertLayout,
@@ -14,9 +15,10 @@ function ConvertLayout() {
   
   return (
     <SidebarProvider>
-      <div className="flex h-full w-full overflow-hidden">
+      <div className="flex min-h-screen w-full overflow-hidden">
         <AppSidebar />
-        <main className="flex-1 overflow-y-auto bg-background">
+        <Toaster/>
+        <main className="flex-1 bg-background">
             <Link to='/'>
               <Button variant="ghost" size="sm" className="gap-1 hover:cursor-pointer hover:bg-transparent"
                 onMouseEnter={() => arrowRef.current?.startAnimation()}

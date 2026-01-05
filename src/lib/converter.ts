@@ -71,3 +71,45 @@ export const detectMimeType = (bytes: Uint8Array) => {
   if (bytes[0] === 0x52 && bytes[1] === 0x49) return "image/webp"
   return "application/octet-stream"
 }
+
+export const compressImageBlob = async (
+  blob: Blob,
+  options: TCompressOptions = {}
+):Promise<Blob> => {
+  const {
+    maxWidth,
+    maxHeight,
+    outputType
+  } = options
+
+  const bitmap = await createImageBitmap(blob)
+
+  let width = bitmap.width
+  let height = bitmap.height
+
+  if (maxWidth || maxHeight) {
+    const scale = Math.min(
+      maxWidth ? maxWidth / width : 1,
+      maxHeight ? maxHeight / height : 1,
+      1
+    )
+
+    width = Math.round(width * scale)
+    height = Math.round(height * scale)
+  }
+
+  const canvas = document.createElement("canvas")
+  canvas.height = height
+  canvas.width = width
+
+  const ctx = canvas.getContext("2d")
+  ctx?.drawImage(bitmap, 0, 0, width, height)
+
+  return new Promise((resolve) => {
+    canvas.toBlob(
+      (result) => resolve(result!),
+      outputType,
+      0.5,
+    )
+  })
+}

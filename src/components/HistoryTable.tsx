@@ -17,8 +17,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
 import { Input } from './ui/input'
+import { toast } from 'sonner'
+import { $page } from '@/stores/$store'
+import { DeleteIcon } from './ui/delete'
 
-// ✅ 1. Pindahkan columnHelper ke luar component
 const columnHelper = createColumnHelper<TRecord>()
 
 const HistoryTable = () => {
@@ -32,7 +34,6 @@ const HistoryTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [nameFilter, setNameFilter] = useState('')
 
-  // ✅ 2. Wrap dengan useCallback
   const loadConversionHistory = useCallback(async () => {
     try {
       const storedData = await conversionService.getConversion();
@@ -86,6 +87,17 @@ const HistoryTable = () => {
       })
 
       await conversionService.deleteConversion(id)
+      toast.success("Cached Image Deleted", {
+        description: "Cached image deleted successfully from device",
+        icon: <DeleteIcon size={16} />,
+        classNames: {
+          toast: "gap-4",
+          icon: "mt-1",
+          title: "text-sm font-medium",
+          description: "text-xs text-muted-foreground",
+        },
+      })
+
     } catch (error) {
       console.error("Failed to delete conversion:", error)
     }
@@ -157,45 +169,49 @@ const HistoryTable = () => {
 
   if (conversions.length === 0) {
     return (
-      <Card className="p-12 text-center">
+      <div className="p-12 text-center">
         <h3 className="text-lg font-semibold mb-2">No conversions yet</h3>
         <p className="text-muted-foreground mb-6">Start converting images to see your history here</p>
-        <Button className="gap-2">
-          <a href="/" className="flex gap-2">
+        <Button onClick={() => $page.set("convert")} className="gap-2">
             Start Converting
-          </a>
         </Button>
-      </Card>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-4 min-h-screen py-4">
+    <div className="w-full py-4">
       <div className="overflow-x-auto space-y-4">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center px-5">
           <Input
             type="text"
             placeholder="Filter by file name..."
             value={nameFilter}
             onChange={(e) => setNameFilter(e.target.value)}
-            className="max-w-sm"
+            className="
+              max-w-sm
+              focus-visible:ring-0
+              focus-visible:ring-offset-0
+              focus:shadow-none
+              focus:outline-none
+            "
           />
+
           {nameFilter && (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setNameFilter('')}
-            >
-              Clear
-            </Button>
+            <div className='flex items-center justify-between w-full'>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setNameFilter('')}
+              >
+                Clear
+              </Button>
+            <div className="text-sm text-muted-foreground block">
+              Showing {filteredConversions.length} of {conversions.length} results
+            </div>
+            </div>
           )}
         </div>
-
-        {nameFilter && (
-          <div className="text-sm text-muted-foreground">
-            Showing {filteredConversions.length} of {conversions.length} results
-          </div>
-        )}
 
         <table className="w-full text-sm">
           <thead className="border-b border-border bg-muted/50">

@@ -16,3 +16,10 @@ type TRecord = {
     imageBlob: Blob
     imageUrl: string
 }
+
+type TCompressOptions = {
+    quality?: number
+    maxWidth?: number
+    maxHeight?: number
+    outputType?: "image/jpeg" | "image/webp" | "image/png"
+}

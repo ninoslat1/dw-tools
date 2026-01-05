@@ -14,12 +14,15 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select"
-import { convertImage, downloadBlob } from "@/lib/converter"
+import { compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
+import { Checkbox } from "./ui/checkbox"
+import { Label } from "./ui/label"
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
   // const [preview, setPreview] = useState<string | null>(null)
+  const [isCompress, setIsCompress] = useState<boolean>(false)
   const [isDownload, setIsDownload] = useState<boolean>(false)
   const [selectedFormat, setSelectedFormat] = useState<"png" | "jpeg" | "jpg" | "webp" | "avif" | "">("")
   const [isConverting, setIsConverting] = useState(false)
@@ -39,9 +42,9 @@ export default function Dropzone() {
         if (item.type.startsWith("image/")) {
           const blob = item.getAsFile()
           if (!blob) continue
-
-          const ext = blob.type.split("/")[1] || "png"
-          const file = new File([blob], `pasted-image.${ext}`, {
+          
+          const filename = blob.name || "pasted-image"
+          const file = new File([blob], `${filename}`, {
             type: blob.type,
           })
 
@@ -111,18 +114,39 @@ export default function Dropzone() {
         const blob = await convertImage(file, selectedFormat);
         const originalName = file.name.split('.').slice(0, -1).join('.');
         const newFilename = `${originalName}.${selectedFormat}`;
-        
-        await conversionService.cacheConversion({
-          uid: crypto.randomUUID(),
-          imageUrl: newFilename,
-          imageBlob: new Uint8Array(await blob.arrayBuffer()),
-          sourceFormat: file.type,
-          targetFormat: selectedFormat,
-          timestamp: new Date().toISOString()
-        });
 
-        setIsDownload(true)
-        downloadBlob(blob, newFilename);
+        if(isCompress && selectedFormat === "jpeg" || selectedFormat === "webp" || selectedFormat === "png"){
+          const compressBlob = await compressImageBlob(blob, {
+            outputType: `image/${selectedFormat}`
+          })
+
+
+          await conversionService.cacheConversion({
+            uid: crypto.randomUUID(),
+            imageUrl: newFilename,
+            imageBlob: new Uint8Array(await compressBlob.arrayBuffer()),
+            sourceFormat: file.type,
+            targetFormat: selectedFormat,
+            timestamp: new Date().toISOString()
+          })
+
+          setIsDownload(true)
+          downloadBlob(compressBlob, newFilename)
+        } else {
+
+          await conversionService.cacheConversion({
+            uid: crypto.randomUUID(),
+            imageUrl: newFilename,
+            imageBlob: new Uint8Array(await blob.arrayBuffer()),
+            sourceFormat: file.type,
+            targetFormat: selectedFormat,
+            timestamp: new Date().toISOString()
+          });
+  
+          setIsDownload(true)
+          downloadBlob(blob, newFilename);
+        }
+
       }
     } catch (error) {
       console.error('Conversion failed:', error);
@@ -194,7 +218,7 @@ export default function Dropzone() {
             <div className="space-y-6">
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Image Selected</label>
+                <Label className="text-sm font-medium text-muted-foreground">Image Selected</Label>
                 <div className="flex items-center gap-3 p-4 bg-background/50 rounded-lg border border-border">
                   <div className="flex-1 truncate">
                     <p className="font-medium truncate">{file.name}</p>
@@ -206,7 +230,7 @@ export default function Dropzone() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Convert to Format</label>
+                <Label className="text-sm font-medium text-muted-foreground">Convert to Format</Label>
                 <Select 
                   value={selectedFormat} 
                   onValueChange={(val: string) => {
@@ -230,6 +254,18 @@ export default function Dropzone() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {["jpeg", "webp", "png"].includes(selectedFormat) && (
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="compress"
+                    checked={isCompress}
+                    onCheckedChange={(v) => setIsCompress(Boolean(v))}
+                  />
+                  <Label htmlFor="compress">Compress Image</Label>
+                </div>
+              )}
+
 
               <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
