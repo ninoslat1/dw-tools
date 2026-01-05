@@ -1,30 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
+  
+  
+  
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  type SortingState,
-  type PaginationState,
-  type ColumnFiltersState,
-  getFilteredRowModel,
+  useReactTable
 } from "@tanstack/react-table"
-import { Card } from './ui/card'
-import { Button } from './ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { DeleteIcon } from './ui/delete'
+import type {ColumnFiltersState, PaginationState, SortingState} from "@tanstack/react-table";
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
-import { Input } from './ui/input'
-import { toast } from 'sonner'
 import { $page } from '@/stores/$store'
-import { DeleteIcon } from './ui/delete'
 
 const columnHelper = createColumnHelper<TRecord>()
 
 const HistoryTable = () => {
-  const [conversions, setConversions] = useState<TRecord[]>([])
+  const [conversions, setConversions] = useState<Array<TRecord>>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -39,7 +39,7 @@ const HistoryTable = () => {
       const storedData = await conversionService.getConversion();
       
       if (storedData && storedData.length > 0) {
-        const processedHistory: TRecord[] = storedData.map((item: any) => {
+        const processedHistory: Array<TRecord> = storedData.map((item: any) => {
           let finalUrl = "";
           let blob: Blob | null = null;
 
@@ -161,9 +161,9 @@ const HistoryTable = () => {
 
   if (isLoading) {
     return (
-      <Card className="p-8 text-center">
+      <div className="p-8 text-center">
         <p className="text-muted-foreground">Loading conversion history...</p>
-      </Card>
+      </div>
     )
   }
 

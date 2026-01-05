@@ -1,6 +1,7 @@
 import { useRef } from "react"
-import { DeleteIcon, type DeleteIconHandle } from "./ui/delete"
+import { DeleteIcon  } from "./ui/delete"
 import { Button } from "./ui/button"
+import type {DeleteIconHandle} from "./ui/delete";
 
 export function DeleteActionButton({
   onClick,

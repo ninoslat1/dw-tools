@@ -10,51 +10,51 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConvertConvertRouteImport } from './routes/_convert/convert'
-import { Route as ConvertConvertIndexRouteImport } from './routes/_convert/convert.index'
+import { Route as HistoryHistoryRouteImport } from './routes/_history/history'
+import { Route as HistoryHistoryIndexRouteImport } from './routes/_history/history.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConvertConvertRoute = ConvertConvertRouteImport.update({
-  id: '/_convert/convert',
-  path: '/convert',
+const HistoryHistoryRoute = HistoryHistoryRouteImport.update({
+  id: '/_history/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConvertConvertIndexRoute = ConvertConvertIndexRouteImport.update({
+const HistoryHistoryIndexRoute = HistoryHistoryIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ConvertConvertRoute,
+  getParentRoute: () => HistoryHistoryRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/convert': typeof ConvertConvertRouteWithChildren
-  '/convert/': typeof ConvertConvertIndexRoute
+  '/history': typeof HistoryHistoryRouteWithChildren
+  '/history/': typeof HistoryHistoryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/convert': typeof ConvertConvertIndexRoute
+  '/history': typeof HistoryHistoryIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_convert/convert': typeof ConvertConvertRouteWithChildren
-  '/_convert/convert/': typeof ConvertConvertIndexRoute
+  '/_history/history': typeof HistoryHistoryRouteWithChildren
+  '/_history/history/': typeof HistoryHistoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/convert' | '/convert/'
+  fullPaths: '/' | '/history' | '/history/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/convert'
-  id: '__root__' | '/' | '/_convert/convert' | '/_convert/convert/'
+  to: '/' | '/history'
+  id: '__root__' | '/' | '/_history/history' | '/_history/history/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ConvertConvertRoute: typeof ConvertConvertRouteWithChildren
+  HistoryHistoryRoute: typeof HistoryHistoryRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -66,38 +66,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_convert/convert': {
-      id: '/_convert/convert'
-      path: '/convert'
-      fullPath: '/convert'
-      preLoaderRoute: typeof ConvertConvertRouteImport
+    '/_history/history': {
+      id: '/_history/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_convert/convert/': {
-      id: '/_convert/convert/'
+    '/_history/history/': {
+      id: '/_history/history/'
       path: '/'
-      fullPath: '/convert/'
-      preLoaderRoute: typeof ConvertConvertIndexRouteImport
-      parentRoute: typeof ConvertConvertRoute
+      fullPath: '/history/'
+      preLoaderRoute: typeof HistoryHistoryIndexRouteImport
+      parentRoute: typeof HistoryHistoryRoute
     }
   }
 }
 
-interface ConvertConvertRouteChildren {
-  ConvertConvertIndexRoute: typeof ConvertConvertIndexRoute
+interface HistoryHistoryRouteChildren {
+  HistoryHistoryIndexRoute: typeof HistoryHistoryIndexRoute
 }
 
-const ConvertConvertRouteChildren: ConvertConvertRouteChildren = {
-  ConvertConvertIndexRoute: ConvertConvertIndexRoute,
+const HistoryHistoryRouteChildren: HistoryHistoryRouteChildren = {
+  HistoryHistoryIndexRoute: HistoryHistoryIndexRoute,
 }
 
-const ConvertConvertRouteWithChildren = ConvertConvertRoute._addFileChildren(
-  ConvertConvertRouteChildren,
+const HistoryHistoryRouteWithChildren = HistoryHistoryRoute._addFileChildren(
+  HistoryHistoryRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ConvertConvertRoute: ConvertConvertRouteWithChildren,
+  HistoryHistoryRoute: HistoryHistoryRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

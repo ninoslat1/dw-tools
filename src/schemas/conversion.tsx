@@ -1,6 +1,6 @@
+import type {ColumnHelper} from "@tanstack/react-table";
 import { DeleteActionButton } from "@/components/DeleteButton"
 import { DownloadActionButton } from "@/components/DownloadButton"
-import { type ColumnHelper } from "@tanstack/react-table"
 
 export const ConversionTableSchema = (columnHelper: ColumnHelper<TRecord>, handleDelete: (id: string) => void, handleDownload: (record: TConversionRecord) => void) => {
     const columns = [

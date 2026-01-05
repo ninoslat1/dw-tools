@@ -1,23 +1,24 @@
 
 
-import { useState, useRef, useEffect, type DragEvent } from "react"
+import {  useEffect, useRef, useState } from "react"
+import { Check, Download, Loader2, Upload, X } from "lucide-react"
+import { Checkbox } from "./ui/checkbox"
+import { Label } from "./ui/label"
+import type {DragEvent} from "react";
 import { Card } from "@/components/ui/card"
-import { Upload, X, Download, Check, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select"
 import { compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
-import { Checkbox } from "./ui/checkbox"
-import { Label } from "./ui/label"
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
@@ -87,7 +88,7 @@ export default function Dropzone() {
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    const selected = e.dataTransfer.files?.[0]
+    const selected = e.dataTransfer.files[0]
     if (selected) {
       setFile(selected)
       // setPreview(URL.createObjectURL(selected))
@@ -157,7 +158,7 @@ export default function Dropzone() {
   };
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-background/50 to-background">
+    <section className="py-20 h-[850px] px-4 bg-gradient-to-b from-background/50 to-background" id="converter">
       <div className="max-w-4xl mx-auto">
 
         <div className="text-center mb-12">
@@ -260,7 +261,7 @@ export default function Dropzone() {
                   <Checkbox
                     id="compress"
                     checked={isCompress}
-                    onCheckedChange={(v) => setIsCompress(Boolean(v))}
+                    onCheckedChange={(v: boolean) => setIsCompress(Boolean(v))}
                   />
                   <Label htmlFor="compress">Compress Image</Label>
                 </div>

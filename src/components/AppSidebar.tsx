@@ -1,6 +1,12 @@
 'use client'
 
 
+import { useRef } from "react"
+import { WorkflowIcon  } from "./ui/workflow"
+import { HistoryIcon  } from "./ui/history"
+import type {WorkflowIconHandle} from "./ui/workflow";
+import type {HistoryIconHandle} from "./ui/history";
+import { $page } from "@/stores/$store"
 import {
   Sidebar,
   SidebarContent,
@@ -11,17 +17,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { $page } from "@/stores/$store"
-import { useRef } from "react"
-import { WorkflowIcon, type WorkflowIconHandle } from "./ui/workflow"
-import { HistoryIcon, type HistoryIconHandle } from "./ui/history"
 
 
 export function AppSidebar() {
   const workflowRef = useRef<WorkflowIconHandle>(null)
   const historyRef = useRef<HistoryIconHandle>(null)
 
-  const items: TSidebarItem[] = [
+  const items: Array<TSidebarItem> = [
   {
     title: "Convert",
     Icon: WorkflowIcon,

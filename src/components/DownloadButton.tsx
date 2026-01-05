@@ -1,6 +1,7 @@
 import { useRef } from "react"
-import { DownloadIcon, type DownloadIconHandle } from "./ui/download"
+import { DownloadIcon  } from "./ui/download"
 import { Button } from "./ui/button"
+import type {DownloadIconHandle} from "./ui/download";
 
 export function DownloadActionButton({
   onClick,

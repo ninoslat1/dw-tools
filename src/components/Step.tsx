@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DownloadIcon, RefreshCwIcon, UploadCloudIcon } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const steps = [
   {
@@ -12,7 +12,7 @@ const steps = [
     step: "02",
     title: "Instant Processing",
     icon: <RefreshCwIcon width={32} height={32}/>,
-    description: "Our converter processes your image in real-time",
+    description: "Our tools processes your image in real-time",
   },
   {
     step: "03",

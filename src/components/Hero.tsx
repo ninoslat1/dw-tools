@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { ArrowRight, Zap } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function Hero() {
   return (
@@ -20,7 +20,7 @@ export default function Hero() {
 
         {/* Subheadline */}
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 text-balance">
-          Convert WebP, PNG, JPG, and more — all processed locally on your device.
+          Convert, upscale, and more — all processed locally on your device.
           No uploads, no limits, and no data ever leaves your computer.
         </p>
 
@@ -31,7 +31,7 @@ export default function Hero() {
             className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12"
             asChild
           >
-            <Link to="/convert" className="flex items-center gap-2">
+            <Link to="/history" className="flex items-center gap-2">
               Start Converting <ArrowRight className="w-5 h-5" />
             </Link>
           </Button>

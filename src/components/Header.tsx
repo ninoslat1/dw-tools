@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import CompanyIcon from "./CompanyIcon"
 import { Link } from "@tanstack/react-router"
+import CompanyIcon from "./CompanyIcon"
+import { Button } from "@/components/ui/button"
 import { $page } from "@/stores/$store"
 
 export default function Header() {
@@ -10,14 +10,20 @@ export default function Header() {
       <nav className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <CompanyIcon/>
         
-        <Link to="/docs" className="flex items-center gap-2">
-            Documentation
+        <div className="flex items-center justify-center gap-5">
+          <Link to="/docs" className="flex items-center gap-2">
+            Docs
           </Link>
 
-        <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2" onClick={() => $page.set("convert")}>
-          <Link to="/convert" className="flex items-center gap-2">
-            Try Now <ArrowRight className="w-4 h-4" />
+          <Link to="/history" className="flex items-center gap-2">
+            History
           </Link>
+        </div>
+
+        <Button className="bg-primary text-primary-foreground hover:opacity-90 gap-2" onClick={() => $page.set("convert")}>
+          <a href="#converter" className="flex items-center gap-2">
+            Try Now <ArrowRight className="w-4 h-4" />
+          </a>
         </Button>
       </nav>
     </header>
