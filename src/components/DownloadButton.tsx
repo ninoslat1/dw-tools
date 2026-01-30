@@ -1,14 +1,11 @@
-import { useRef } from "react"
-import { DownloadIcon  } from "./ui/download"
 import { Button } from "./ui/button"
-import type {DownloadIconHandle} from "./ui/download";
+import { DownloadIcon } from "lucide-react"
 
 export function DownloadActionButton({
   onClick,
 }: {
   onClick: () => void
 }) {
-  const ref = useRef<DownloadIconHandle>(null)
 
   return (
     <Button
@@ -16,10 +13,8 @@ export function DownloadActionButton({
       size="sm"
       onClick={onClick}
       className="gap-1 hover:cursor-pointer"
-      onMouseEnter={() => ref.current?.startAnimation()}
-      onMouseLeave={() => ref.current?.stopAnimation()}
     >
-      <DownloadIcon ref={ref} className="w-4 h-4" />
+      <DownloadIcon className="w-4 h-4" />
       <span className="hidden sm:inline">Download</span>
     </Button>
   )

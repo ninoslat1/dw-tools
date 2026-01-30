@@ -5,6 +5,7 @@ type TConversionRecord = {
     targetFormat: string
     imageBlob: Blob
     imageUrl: string
+    filename: string
 }
 
 type TRecord = {

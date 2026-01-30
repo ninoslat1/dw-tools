@@ -5,12 +5,12 @@ const features = [
   {
     icon: '⚡',
     title: "Lightning Fast",
-    description: "Transform large images in seconds with an optimized, local-first engine.",
+    description: "Transform your images in seconds with an optimized, local-first engine.",
   },
   {
     icon: '🔒',
     title: "Secure & Private",
-    description: "Everything runs directly in your browser—no uploads, no tracking, no servers.",
+    description: "Everything runs directly in your browser-no uploads, no tracking.",
   },
   {
     icon: '📱',
@@ -20,7 +20,7 @@ const features = [
   {
     icon: '♾️',
     title: "Unlimited Conversions",
-    description: "Transform as many images as you want with zero limits and zero restrictions.",
+    description: "Transform as many images as you want-no limits, no restrictions.",
   },
 ]
 

@@ -1,7 +1,7 @@
 
 
-import {  useEffect, useRef, useState } from "react"
-import { Check, Download, Loader2, Upload, X } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { Check, CloudBackupIcon, Download, Loader2, Upload, X } from "lucide-react"
 import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
 import type {DragEvent} from "react";
@@ -17,18 +17,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
+import { blobToBase64, compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
   // const [preview, setPreview] = useState<string | null>(null)
   const [isCompress, setIsCompress] = useState<boolean>(false)
-  const [isDownload, setIsDownload] = useState<boolean>(false)
+  // const [isDownload, setIsDownload] = useState<boolean>(false)
   const [selectedFormat, setSelectedFormat] = useState<"png" | "jpeg" | "jpg" | "webp" | "avif" | "">("")
   const [isConverting, setIsConverting] = useState(false)
   const [dbReady, setDbReady] = useState(false)
   const [getDatabaseFile, setGetDatabaseFile] = useState<(() => Promise<File>) | null>(null)
+  const [convertedBlob, setConvertedBlob] = useState<Blob | null>(null)
+  const [originalBlob, setOriginalBlob] = useState<Blob | null>(null)
+  const MAX_BASE64_SIZE = 5_000_000
   
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
@@ -91,6 +94,7 @@ export default function Dropzone() {
     const selected = e.dataTransfer.files[0]
     if (selected) {
       setFile(selected)
+      setOriginalBlob(selected)
       // setPreview(URL.createObjectURL(selected))
     }
   }
@@ -104,35 +108,53 @@ export default function Dropzone() {
     inputRef.current?.click()
   }
 
+  const handleCopyBase64 = async () => {
+    if (!convertedBlob || !originalBlob) return
+
+    const useOriginal = convertedBlob.size > MAX_BASE64_SIZE
+    const blobToUse = useOriginal ? originalBlob : convertedBlob
+
+    const base64 = await blobToBase64(blobToUse)
+    await navigator.clipboard.writeText(base64)
+  }
+
+
   const handleConvert = async () => {
     if (!file || !selectedFormat || !getDatabaseFile) return;
 
     setIsConverting(true);
     try {
       const databaseFile = await getDatabaseFile();
+      const originalName = file.name.split('.').slice(0, -1).join('.')
+      const newFilename = `${originalName}.${selectedFormat}`
+      const blob = await convertImage(file, selectedFormat)
       
       if (databaseFile) {
-        const blob = await convertImage(file, selectedFormat);
-        const originalName = file.name.split('.').slice(0, -1).join('.');
-        const newFilename = `${originalName}.${selectedFormat}`;
 
-        if(isCompress && selectedFormat === "jpeg" || selectedFormat === "webp" || selectedFormat === "png"){
-          const compressBlob = await compressImageBlob(blob, {
-            outputType: `image/${selectedFormat}`
+        let finalBlob = blob
+
+        if (
+          isCompress &&
+          (selectedFormat === "jpeg" ||
+            selectedFormat === "webp" ||
+            selectedFormat === "png")
+        ) {
+          finalBlob = await compressImageBlob(blob, {
+            outputType: `image/${selectedFormat}`,
           })
+        }
 
+        await conversionService.cacheConversion({
+          uid: crypto.randomUUID(),
+          imageUrl: newFilename,
+          imageBlob: new Uint8Array(await finalBlob.arrayBuffer()),
+          sourceFormat: file.type,
+          targetFormat: selectedFormat,
+          timestamp: new Date().toISOString(),
+        })
 
-          await conversionService.cacheConversion({
-            uid: crypto.randomUUID(),
-            imageUrl: newFilename,
-            imageBlob: new Uint8Array(await compressBlob.arrayBuffer()),
-            sourceFormat: file.type,
-            targetFormat: selectedFormat,
-            timestamp: new Date().toISOString()
-          })
-
-          setIsDownload(true)
-          downloadBlob(compressBlob, newFilename)
+        setConvertedBlob(finalBlob)
+        downloadBlob(finalBlob, newFilename)
         } else {
 
           await conversionService.cacheConversion({
@@ -144,11 +166,10 @@ export default function Dropzone() {
             timestamp: new Date().toISOString()
           });
   
-          setIsDownload(true)
+          setConvertedBlob(blob)
+          // setIsDownload(true)
           downloadBlob(blob, newFilename);
         }
-
-      }
     } catch (error) {
       console.error('Conversion failed:', error);
       alert('Failed to convert image. Please try again.');
@@ -273,15 +294,16 @@ export default function Dropzone() {
                   variant="outline"
                   onClick={() => {
                     setFile(null)
-                    // setPreview(null)
+                    setConvertedBlob(null)
+                    // setIsDownload(false)
                   }}
                   className="flex items-center gap-2"
                 >
                   <X className="w-4 h-4" /> Remove
                 </Button>
 
-                <Button 
-                  className="flex items-center gap-2 flex-1 sm:flex-none" 
+                <Button
+                  className="flex items-center gap-2"
                   onClick={handleConvert}
                   disabled={!selectedFormat || isConverting}
                 >
@@ -292,23 +314,24 @@ export default function Dropzone() {
                     </>
                   ) : (
                     <>
-                      {isDownload == false && 
-                        <>
-                          <Download className="w-4 h-4" />
-                          Start Converting
-                        </>
-                      }
-
-                      {isDownload == true &&
-                        <>
-                          <Download className="w-4 h-4" />
-                          Download
-                        </>
-                      }
+                      <Download className="w-4 h-4" />
+                      Convert & Download
                     </>
                   )}
                 </Button>
+
+                {convertedBlob && (
+                  <Button
+                    variant="secondary"
+                    className="flex items-center gap-2"
+                    onClick={handleCopyBase64}
+                  >
+                    <CloudBackupIcon className="w-4 h-4" />
+                    Copy Base64 (Backup)
+                  </Button>
+                )}
               </div>
+
 
             </div>
           </Card>

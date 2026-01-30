@@ -103,7 +103,6 @@ const HistoryTable = () => {
     }
   }, [])
 
-  // ✅ 3. Fix filter - tidak perlu split
   const filteredConversions = useMemo(() => {
     if (!nameFilter) return conversions
     
@@ -112,15 +111,15 @@ const HistoryTable = () => {
     })
   }, [conversions, nameFilter])
 
-  // ✅ 4. Fix type dan download filename
   const handleDownload = useCallback((record: TConversionRecord) => {
     const link = document.createElement("a")
-    link.href = record.imageUrl
-    link.download = record.imageUrl // ← Gunakan filename
+    link.href = record.imageUrl          
+    link.download = record.filename      
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }, [])
+
 
   const columns = useMemo(
     () => ConversionTableSchema(columnHelper, handleDelete, handleDownload),
@@ -148,7 +147,6 @@ const HistoryTable = () => {
     loadConversionHistory()
   }, [loadConversionHistory])
 
-  // ✅ 5. Cleanup Blob URLs on unmount
   useEffect(() => {
     return () => {
       conversions.forEach((conv) => {
