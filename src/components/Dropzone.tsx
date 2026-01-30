@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select"
 import { blobToBase64, compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
+import { Progress } from "./ui/progress";
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
@@ -32,7 +33,7 @@ export default function Dropzone() {
   const [convertedBlob, setConvertedBlob] = useState<Blob | null>(null)
   const [originalBlob, setOriginalBlob] = useState<Blob | null>(null)
   const MAX_BASE64_SIZE = 5_000_000
-  
+  const [progress, setProgress] = useState(0)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
@@ -75,7 +76,6 @@ export default function Dropzone() {
           const db = new SQLocal({ databasePath: 'dwimgconv.sqlite3' });
           setGetDatabaseFile(() => db.getDatabaseFile);
           setDbReady(true);
-          console.log('Database initialized successfully');
         }
       } catch (error) {
         console.error('Failed to initialize database:', error);
@@ -123,12 +123,14 @@ export default function Dropzone() {
     if (!file || !selectedFormat || !getDatabaseFile) return;
 
     setIsConverting(true);
+    setProgress(5)
+
     try {
       const databaseFile = await getDatabaseFile();
       const originalName = file.name.split('.').slice(0, -1).join('.')
       const newFilename = `${originalName}.${selectedFormat}`
       const blob = await convertImage(file, selectedFormat)
-      
+      setProgress(30)
       if (databaseFile) {
 
         let finalBlob = blob
@@ -142,6 +144,7 @@ export default function Dropzone() {
           finalBlob = await compressImageBlob(blob, {
             outputType: `image/${selectedFormat}`,
           })
+          setProgress(60)
         }
 
         await conversionService.cacheConversion({
@@ -152,9 +155,11 @@ export default function Dropzone() {
           targetFormat: selectedFormat,
           timestamp: new Date().toISOString(),
         })
+        setProgress(85)
 
         setConvertedBlob(finalBlob)
         downloadBlob(finalBlob, newFilename)
+        setProgress(100)
         } else {
 
           await conversionService.cacheConversion({
@@ -165,14 +170,15 @@ export default function Dropzone() {
             targetFormat: selectedFormat,
             timestamp: new Date().toISOString()
           });
+          setProgress(85)
   
           setConvertedBlob(blob)
-          // setIsDownload(true)
           downloadBlob(blob, newFilename);
+          setProgress(100)
         }
     } catch (error) {
-      console.error('Conversion failed:', error);
       alert('Failed to convert image. Please try again.');
+      setProgress(0)
     } finally {
       setIsConverting(false);
     }
@@ -214,7 +220,6 @@ export default function Dropzone() {
                 const selected = e.target.files?.[0]
                 if (selected) {
                   setFile(selected)
-                  // setPreview(URL.createObjectURL(selected))
                 }
               }}
             />
@@ -301,6 +306,15 @@ export default function Dropzone() {
                 >
                   <X className="w-4 h-4" /> Remove
                 </Button>
+                
+                {isConverting && (
+                  <div className="space-y-2">
+                    <Progress value={progress} />
+                    <p className="text-xs text-muted-foreground">
+                      Converting... {progress}%
+                    </p>
+                  </div>
+                )}
 
                 <Button
                   className="flex items-center gap-2"

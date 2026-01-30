@@ -11,11 +11,10 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { DeleteIcon } from './ui/delete'
 import type {ColumnFiltersState, PaginationState, SortingState} from "@tanstack/react-table";
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
