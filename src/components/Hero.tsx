@@ -31,9 +31,9 @@ export default function Hero() {
             className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12"
             asChild
           >
-            <Link to="/history" className="flex items-center gap-2">
+            <a href="#converter" className="flex items-center gap-2">
               Start Converting <ArrowRight className="w-5 h-5" />
-            </Link>
+            </a>
           </Button>
 
           <Button size="lg" variant="outline" className="h-12 bg-transparent" asChild>

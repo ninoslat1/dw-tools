@@ -20,6 +20,7 @@ import {
 import { blobToBase64, compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
 import { Progress } from "./ui/progress";
+import { animateTo } from "@/lib/animate";
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
@@ -33,7 +34,8 @@ export default function Dropzone() {
   const [convertedBlob, setConvertedBlob] = useState<Blob | null>(null)
   const [originalBlob, setOriginalBlob] = useState<Blob | null>(null)
   const MAX_BASE64_SIZE = 5_000_000
-  const [progress, setProgress] = useState(0)
+  // const [_, setProgress] = useState(0)
+  const [targetProgress, setTargetProgress] = useState(0)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
@@ -99,6 +101,18 @@ export default function Dropzone() {
     }
   }
 
+  useEffect(() => {
+    if (!isConverting) return
+
+    const timer = setInterval(() => {
+      // ini akan terus ngejar target terakhir
+      animateTo(setTargetProgress, targetProgress)
+    }, 50)
+
+    return () => clearInterval(timer)
+  }, [isConverting, targetProgress])
+
+
   const preventDefaults = (e: DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -123,14 +137,14 @@ export default function Dropzone() {
     if (!file || !selectedFormat || !getDatabaseFile) return;
 
     setIsConverting(true);
-    setProgress(5)
+    setTargetProgress(5)
 
     try {
       const databaseFile = await getDatabaseFile();
       const originalName = file.name.split('.').slice(0, -1).join('.')
       const newFilename = `${originalName}.${selectedFormat}`
       const blob = await convertImage(file, selectedFormat)
-      setProgress(30)
+      setTargetProgress(30)
       if (databaseFile) {
 
         let finalBlob = blob
@@ -144,7 +158,7 @@ export default function Dropzone() {
           finalBlob = await compressImageBlob(blob, {
             outputType: `image/${selectedFormat}`,
           })
-          setProgress(60)
+          setTargetProgress(60)
         }
 
         await conversionService.cacheConversion({
@@ -155,11 +169,11 @@ export default function Dropzone() {
           targetFormat: selectedFormat,
           timestamp: new Date().toISOString(),
         })
-        setProgress(85)
+        setTargetProgress(85)
 
         setConvertedBlob(finalBlob)
         downloadBlob(finalBlob, newFilename)
-        setProgress(100)
+        setTargetProgress(100)
         } else {
 
           await conversionService.cacheConversion({
@@ -170,15 +184,15 @@ export default function Dropzone() {
             targetFormat: selectedFormat,
             timestamp: new Date().toISOString()
           });
-          setProgress(85)
+          setTargetProgress(85)
   
           setConvertedBlob(blob)
           downloadBlob(blob, newFilename);
-          setProgress(100)
+          setTargetProgress(100)
         }
     } catch (error) {
       alert('Failed to convert image. Please try again.');
-      setProgress(0)
+      setTargetProgress(0)
     } finally {
       setIsConverting(false);
     }
@@ -293,6 +307,15 @@ export default function Dropzone() {
                 </div>
               )}
 
+              {isConverting && (
+                <div className="flex items-center gap-3">
+                  <Progress value={targetProgress} className="flex-1" />
+                  <p className="text-xs text-muted-foreground w-10 text-right">
+                    {targetProgress}%
+                  </p>
+                </div>
+              )}
+
 
               <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
@@ -307,14 +330,6 @@ export default function Dropzone() {
                   <X className="w-4 h-4" /> Remove
                 </Button>
                 
-                {isConverting && (
-                  <div className="space-y-2">
-                    <Progress value={progress} />
-                    <p className="text-xs text-muted-foreground">
-                      Converting... {progress}%
-                    </p>
-                  </div>
-                )}
 
                 <Button
                   className="flex items-center gap-2"
