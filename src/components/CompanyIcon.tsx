@@ -1,5 +1,3 @@
-import React from 'react'
-
 const CompanyIcon = () => {
   return (
     <div className="flex items-center gap-2">
