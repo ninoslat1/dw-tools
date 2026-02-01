@@ -12,6 +12,8 @@
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
+    "@mdx-js/esbuild": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
     "@nanostores/react": "^1.0.0",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -45,6 +47,7 @@
     "tw-animate-css": "^1.3.6"
   },
   "devDependencies": {
+    "@mdx-js/rollup": "^3.1.1",
     "@tanstack/devtools-event-client": "^0.3.2",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.0",

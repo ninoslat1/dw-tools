@@ -11,9 +11,9 @@ export default function Header() {
         <CompanyIcon/>
         
         <div className="flex items-center justify-center gap-5">
-          <Link to="/docs" className="flex items-center gap-2">
+          {/* <Link to="/docs" className="flex items-center gap-2">
             Docs
-          </Link>
+          </Link> */}
 
           <Link to="/history" className="flex items-center gap-2">
             History
