@@ -3,18 +3,17 @@
 
 import { SQLocal } from 'sqlocal';
 
-let sqlocalPromise: Promise<SQLocal> | null = null
+let sqlocalPromise: SQLocal | null = null
 
-export function getSQLocal(): Promise<SQLocal> {
+export function getSQLocal(): SQLocal {
   if (sqlocalPromise) return sqlocalPromise
 
-  sqlocalPromise = (async () => {
+  sqlocalPromise = (() => {
     const db = new SQLocal({
       databasePath: 'dwimgconv.sqlite3',
       verbose: false,
     })
 
-    // init schema sekali
     db.sql`
       CREATE TABLE IF NOT EXISTS image (
         uid TEXT PRIMARY KEY,

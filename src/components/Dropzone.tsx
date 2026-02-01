@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Check, CloudBackupIcon, Download, Loader2, Upload, X } from "lucide-react"
 import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
+import { Progress } from "./ui/progress";
 import type {DragEvent} from "react";
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/select"
 import { blobToBase64, compressImageBlob, convertImage, downloadBlob } from "@/lib/converter"
 import { conversionService } from "@/services/conversion"
-import { Progress } from "./ui/progress";
 import { animateTo } from "@/lib/animate";
 
 export default function Dropzone() {
