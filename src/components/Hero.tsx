@@ -7,8 +7,8 @@ export default function Hero() {
       <div className="max-w-4xl mx-auto text-center">
         
         {/* Badge */}
-        <div className="inline-block mb-6 px-4 py-2 bg-accent/40 rounded-full border border-primary/40">
-          <span className="text-primary font-medium text-sm flex items-center gap-2">
+        <div className="inline-block mb-6 px-4 py-2 bg-linear-to-r from-violet-soft to-blue-soft rounded-full">
+          <span className="text-white font-medium text-sm flex items-center gap-2">
             <Zap className="w-4 h-4" /> No uploads • 100% private
           </span>
         </div>

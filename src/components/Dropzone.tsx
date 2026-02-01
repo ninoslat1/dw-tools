@@ -203,7 +203,7 @@ export default function Dropzone() {
       <div className="max-w-4xl mx-auto">
 
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Start Converting Now</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-blue-soft">Start Converting Now</h2>
           <p className="text-lg text-muted-foreground">Drag and drop your image below</p>
         </div>
 

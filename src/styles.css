@@ -94,6 +94,8 @@ code {
 }
 
 @theme inline {
+  --color-violet-soft: #7f62f5;
+  --color-blue-soft: #447df6;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

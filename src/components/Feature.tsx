@@ -31,7 +31,7 @@ export default function Features() {
         
         {/* Headline */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Powerful Features</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-violet-soft">Powerful Features</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Designed to give you a seamless, fast, and private image conversion experience.
           </p>
