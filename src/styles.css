@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 @import 'tailwindcss';
 
 @import 'tw-animate-css';
@@ -132,6 +133,8 @@ code {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --font-is: "Instrument Sans", sans-serif;
+  --font-dm: "DM Mono", sans-serif;
 }
 
 @layer base {

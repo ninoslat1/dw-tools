@@ -27,7 +27,7 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button
             size="lg"
-            className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12"
+            className="bg-violet-soft text-primary-foreground hover:bg-violet-soft/90 gap-2 h-12"
             asChild
           >
             <a href="#converter" className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export default function Hero() {
             </a>
           </Button>
 
-          <Button size="lg" variant="outline" className="h-12 bg-transparent" asChild>
+          <Button size="lg" variant="outline" className="h-12 bg-transparent hover:bg-blue-100 text-blue-soft hover:text-blue-soft/90" asChild>
             <a href="#how-it-works">
               How It Works
             </a>
@@ -46,17 +46,17 @@ export default function Hero() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 md:gap-8 mt-12 pt-8 border-t border-border">
           <div>
-            <div className="text-2xl md:text-3xl font-bold text-primary">0%</div>
+            <div className="text-2xl md:text-3xl font-bold text-fuchsia-300">0%</div>
             <div className="text-sm text-muted-foreground">Image uploaded</div>
           </div>
 
           <div>
-            <div className="text-2xl md:text-3xl font-bold text-primary">∞</div>
+            <div className="text-2xl md:text-3xl font-bold text-fuchsia-300">∞</div>
             <div className="text-sm text-muted-foreground">Unlimited conversions</div>
           </div>
 
           <div>
-            <div className="text-2xl md:text-3xl font-bold text-primary">2s</div>
+            <div className="text-2xl md:text-3xl font-bold text-fuchsia-300">2s</div>
             <div className="text-sm text-muted-foreground">Average processing</div>
           </div>
         </div>
