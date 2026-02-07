@@ -2,8 +2,8 @@
 import { getSQLocal } from '@/db/sqlocal'
 
 export const conversionService = {
-  cacheConversion: async (data: ImageTable) => {
-    const db = await getSQLocal()
+  cacheConversion: (data: ImageTable) => {
+    const db = getSQLocal()
 
     return db.transaction(async (tx) => {
       return tx.sql`
@@ -26,8 +26,8 @@ export const conversionService = {
     })
   },
 
-  getConversion: async () => {
-    const db = await getSQLocal()
+  getConversion: () => {
+    const db = getSQLocal()
 
     return db.sql`
       SELECT
@@ -42,8 +42,8 @@ export const conversionService = {
     `
   },
 
-  deleteConversion: async (uid: string) => {
-    const db = await getSQLocal()
+  deleteConversion: (uid: string) => {
+    const db = getSQLocal()
 
     return db.transaction(async (tx) => {
       return tx.sql`

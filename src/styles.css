@@ -95,6 +95,35 @@ code {
 }
 
 @theme inline {
+  --animate-slide-collide: slide-collide 1.0s ease-out forwards;
+
+  @keyframes slide-collide {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    40% {
+      transform: translateX(120px);
+      opacity: 0.8;
+    }
+    55% {
+      transform: translateX(140px) scale(0.95);
+      opacity: 0.6;
+    }
+    60% {
+      transform: translateX(150px) scale(0.9); /* “nabrak” */
+      opacity: 0.1;
+    }
+    70% {
+      transform: translateX(120px) scale(1.02); /* mental balik */
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
   --color-violet-soft: #7f62f5;
   --color-blue-soft: #447df6;
   --color-background: var(--background);
@@ -144,4 +173,16 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+html[data-scroll-locked][data-scroll-locked],
+body[data-scroll-locked][data-scroll-locked] {
+    overflow: visible !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    --removed-body-scroll-bar-size: 0 !important;
+}
+
+html {
+    scrollbar-gutter: stable;
 }

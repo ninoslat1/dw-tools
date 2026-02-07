@@ -23,4 +23,5 @@ type TCompressOptions = {
     maxWidth?: number
     maxHeight?: number
     outputType?: "image/jpeg" | "image/webp" | "image/png"
+    mode?: "basic" | "normal" | "ultra" | ""
 }

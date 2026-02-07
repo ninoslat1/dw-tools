@@ -37,19 +37,19 @@ export default function Features() {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-violet-soft font-dm">Powerful Features</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-is">
-            Designed to give you a seamless, fast, and private image conversion experience.
+            Designed for a seamless, fast, and private image conversion experience.
           </p>
         </div>
 
         {/* Feature Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature) => (
-            <Card key={feature.title} className={`${feature.bg} border-none text-black font-dm`}>
+            <Card key={feature.title} className={`${feature.bg} border-none text-black`}>
               <CardHeader>
                 <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
                   <span className="text-2xl">{feature.icon}</span>
                 </div>
-                <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
+                <CardTitle className="font-dm text-xl font-bold">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm font-is">{feature.description}</p>

@@ -1,8 +1,7 @@
 
 
 import { useEffect, useRef, useState } from "react"
-import { Check, CloudBackupIcon, Download, Loader2, Upload, X } from "lucide-react"
-import { Checkbox } from "./ui/checkbox"
+import { CloudBackupIcon, Download, Loader2, Upload, X } from "lucide-react"
 import { Label } from "./ui/label"
 import { Progress } from "./ui/progress";
 import type {DragEvent} from "react";
@@ -25,7 +24,6 @@ import { animateTo } from "@/lib/animate";
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
   // const [preview, setPreview] = useState<string | null>(null)
-  const [isCompress, setIsCompress] = useState<boolean>(false)
   // const [isDownload, setIsDownload] = useState<boolean>(false)
   const [selectedFormat, setSelectedFormat] = useState<"png" | "jpeg" | "jpg" | "webp" | "avif" | "">("")
   const [isConverting, setIsConverting] = useState(false)
@@ -39,6 +37,8 @@ export default function Dropzone() {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ["png", "jpeg", "jpg", "webp", "avif"]
   const format = file?.name.split(".").pop()?.toLowerCase()
+  const [compressMode, setCompressMode] = useState<"basic" | "normal" | "ultra" | "none">("none")
+
 
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
@@ -150,7 +150,7 @@ export default function Dropzone() {
         let finalBlob = blob
 
         if (
-          isCompress &&
+          compressMode != "none" &&
           (selectedFormat === "jpeg" ||
             selectedFormat === "webp" ||
             selectedFormat === "png")
@@ -203,16 +203,16 @@ export default function Dropzone() {
       <div className="max-w-4xl mx-auto">
 
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-blue-soft">Start Converting Now</h2>
-          <p className="text-lg text-muted-foreground">Drag and drop your image below</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-violet-soft font-dm">Start Converting Now</h2>
+          <p className="text-lg text-muted-foreground font-is">Drag and drop your image below</p>
         </div>
 
-        {!dbReady && (
+        {/* {!dbReady && (
           <div className="text-center py-8">
             <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-muted-foreground">Initializing database...</p>
           </div>
-        )}
+        )} */}
 
         {dbReady && !file ? (
           <Card
@@ -243,13 +243,8 @@ export default function Dropzone() {
                 <Upload className="w-8 h-8 text-primary" />
               </div>
 
-              <h3 className="text-2xl font-bold mb-2">Drop your image here</h3>
-              <p className="text-muted-foreground mb-4">or click to browse</p>
-
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-green-500" />
-                Instant PNG download
-              </div>
+              <h3 className="text-2xl font-bold mb-2 font-dm">Drop your image here</h3>
+              <p className="text-muted-foreground mb-4 font-is">or click to browse</p>
 
               <Button className="mt-6">Select File</Button>
             </div>
@@ -259,11 +254,11 @@ export default function Dropzone() {
             <div className="space-y-6">
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">Image Selected</Label>
+                <Label className="text-sm font-medium text-muted-foreground font-dm">Image Selected</Label>
                 <div className="flex items-center gap-3 p-4 bg-background/50 rounded-lg border border-border">
                   <div className="flex-1 truncate">
-                    <p className="font-medium truncate">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-medium truncate font-dm">{file.name}</p>
+                    <p className="text-xs text-muted-foreground font-is font-thin">
                       {(file.size / 1024).toFixed(2)} KB
                     </p>
                   </div>
@@ -271,7 +266,7 @@ export default function Dropzone() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">Convert to Format</Label>
+                <Label className="text-sm font-medium text-muted-foreground font-dm">Convert to Format</Label>
                 <Select 
                   value={selectedFormat} 
                   onValueChange={(val: string) => {
@@ -283,7 +278,7 @@ export default function Dropzone() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Formats</SelectLabel>
+                      <SelectLabel className="font-is">Formats</SelectLabel>
                       {availableFormat
                         .filter((fmt) => fmt !== format)
                         .map((fmt) => (
@@ -297,15 +292,35 @@ export default function Dropzone() {
               </div>
 
               {["jpeg", "webp", "png"].includes(selectedFormat) && (
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    id="compress"
-                    checked={isCompress}
-                    onCheckedChange={(v: boolean) => setIsCompress(Boolean(v))}
-                  />
-                  <Label htmlFor="compress">Compress Image</Label>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground font-dm">
+                    Compression Mode (Optional)
+                  </Label>
+
+                  <Select
+                    value={compressMode}
+                    onValueChange={(v: "basic" | "normal" | "ultra" | "none") =>
+                      setCompressMode(v)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="No compression" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel className="font-is">Mode</SelectLabel>
+
+                        <SelectItem value="none">None</SelectItem>
+                        <SelectItem value="basic">Basic</SelectItem>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="ultra">Ultra</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
+
+
 
               {isConverting && (
                 <div className="flex items-center gap-3">

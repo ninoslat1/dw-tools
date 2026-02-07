@@ -1,3 +1,4 @@
+import { COMPRESS_PRESET } from "./utils";
 
 const allowed = ["png", "jpg", "jpeg", "webp", "avif"] as const;
 type ImageFormat = typeof allowed[number];
@@ -82,27 +83,46 @@ export const blobToBase64 = (blob: Blob) =>
 export const compressImageBlob = async (
   blob: Blob,
   options: TCompressOptions = {}
-):Promise<Blob> => {
+): Promise<Blob> => {
   const {
     maxWidth,
     maxHeight,
-    outputType
+    outputType = "image/jpeg",
+    mode = "none",
   } = options
+
+  // 👉 Jika user tidak memilih mode → langsung kembalikan blob asli
+  if (!mode) {
+    return blob
+  }
+
+  if (mode === "none") {
+    return blob
+  }
 
   const bitmap = await createImageBitmap(blob)
 
   let width = bitmap.width
   let height = bitmap.height
 
+  const preset = COMPRESS_PRESET[mode]
+
+  const baseScale = preset.scale
+
   if (maxWidth || maxHeight) {
-    const scale = Math.min(
+    const limitScale = Math.min(
       maxWidth ? maxWidth / width : 1,
       maxHeight ? maxHeight / height : 1,
       1
     )
 
-    width = Math.round(width * scale)
-    height = Math.round(height * scale)
+    const finalScale = Math.min(baseScale, limitScale)
+
+    width = Math.round(width * finalScale)
+    height = Math.round(height * finalScale)
+  } else {
+    width = Math.round(width * baseScale)
+    height = Math.round(height * baseScale)
   }
 
   const canvas = document.createElement("canvas")
@@ -116,7 +136,7 @@ export const compressImageBlob = async (
     canvas.toBlob(
       (result) => resolve(result!),
       outputType,
-      0.5,
+      preset.quality,
     )
   })
 }
