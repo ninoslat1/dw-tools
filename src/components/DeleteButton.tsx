@@ -1,16 +1,21 @@
-import { DeleteIcon } from 'lucide-react'
-import { Button } from './ui/button'
+import { Trash2 } from "lucide-react"
 
-export function DeleteActionButton({ onClick }: { onClick: () => void }) {
+export const DeleteActionButton = ({
+  onClick,
+  className = "",
+}: {
+  onClick: () => void
+  className?: string
+}) => {
   return (
-    <Button
-      variant="outline"
-      size="sm"
+    <button
       onClick={onClick}
-      className="text-destructive hover:text-destructive hover:cursor-pointer"
+      className={`
+        inline-flex items-center justify-center hover:cursor-pointer
+        ${className}
+      `}
     >
-      <DeleteIcon className="w-4 h-4" />
-      <span className="hidden sm:inline">Delete</span>
-    </Button>
+      <Trash2 className="w-4 h-4" />
+    </button>
   )
 }

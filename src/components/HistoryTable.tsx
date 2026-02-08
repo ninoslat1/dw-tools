@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -19,7 +19,7 @@ import type {
 } from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
-import { $page } from '@/stores/$store'
+import { Link } from '@tanstack/react-router'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -74,7 +74,7 @@ const HistoryTable = () => {
     } finally {
       setIsLoading(false)
     }
-  }, []) // ← Empty deps
+  }, [])
 
   const handleDelete = useCallback(async (id: string) => {
     try {
@@ -160,7 +160,7 @@ const HistoryTable = () => {
   if (isLoading) {
     return (
       <div className="p-8 text-center">
-        <p className="text-muted-foreground">Loading conversion history...</p>
+        <p className="text-foreground font-semibold font-is">Loading conversion history...</p>
       </div>
     )
   }
@@ -172,29 +172,66 @@ const HistoryTable = () => {
         <p className="text-muted-foreground mb-6">
           Start converting images to see your history here
         </p>
-        <Button onClick={() => $page.set('convert')} className="gap-2">
-          Start Converting
+        <Button
+          // to="/" 
+          className="
+            bg-violet-soft text-white 
+            hover:bg-violet-600 
+            rounded-xl shadow-sm
+            gap-2
+          "
+        >
+          <Link to="/" className='flex items-center gap-5'>
+            <ArrowRight className="w-4 h-4" />
+            Start Converting
+          </Link>
         </Button>
+
       </div>
     )
   }
 
   return (
-    <div className="w-full py-4">
-      <div className="overflow-x-auto space-y-4">
-        <div className="flex gap-2 items-center px-5">
+    <div className="
+  w-full py-8 px-4 
+  min-h-screen
+  bg-gradient-to-b from-violet-soft/8 via-blue-soft/5 to-background
+">
+
+      <div className="
+  overflow-x-auto space-y-4
+  bg-white/60 backdrop-blur-sm 
+  border border-violet-soft/10 
+  rounded-2xl shadow-sm p-4
+">
+
+        <div className="flex gap-3 items-center px-5">
+          <Button
+    variant="ghost"
+    size="sm"
+    className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10"
+  >
+    <Link to='/'>
+      ← Back
+    </Link>
+  </Button>
+
+
           <Input
             type="text"
             placeholder="Filter by file name..."
             value={nameFilter}
             onChange={(e) => setNameFilter(e.target.value)}
             className="
-              max-w-sm
-              focus-visible:ring-0
-              focus-visible:ring-offset-0
-              focus:shadow-none
-              focus:outline-none
-            "
+  max-w-sm
+  rounded-xl
+  border-violet-soft/20
+  focus-visible:ring-0
+  focus-visible:ring-offset-0
+  focus:shadow-none
+  focus:outline-none
+"
+
           />
 
           {nameFilter && (
@@ -203,9 +240,11 @@ const HistoryTable = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setNameFilter('')}
+                className="text-blue-soft hover:bg-blue-soft/10 hover:text-blue-soft hover:cursor-pointer"
               >
                 Clear
               </Button>
+
               <div className="text-sm text-muted-foreground block">
                 Showing {filteredConversions.length} of {conversions.length}{' '}
                 results
@@ -214,14 +253,14 @@ const HistoryTable = () => {
           )}
         </div>
 
-        <table className="w-full text-sm">
-          <thead className="border-b border-border bg-muted/50">
+        <table className="w-full text-sm border-separate border-spacing-0">
+          <thead className="border-b border-violet-soft/10 bg-violet-soft/5 font-is font-extrabold">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-3 text-left font-semibold text-foreground"
+                    className="px-6 py-3 text-left font-semibold text-violet-soft"
                     onClick={header.column.getToggleSortingHandler()}
                     style={{
                       cursor: header.column.getCanSort()
@@ -243,7 +282,12 @@ const HistoryTable = () => {
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-b border-border hover:bg-muted/50 transition-colors"
+                  className="
+  border-b border-violet-soft/10 
+  hover:bg-violet-soft/5 
+  transition-colors
+"
+
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-6 py-4">
@@ -270,28 +314,40 @@ const HistoryTable = () => {
       </div>
 
       <div className="flex items-center justify-between gap-4 p-4">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-violet-soft/80 font-medium">
           Page {table.getState().pagination.pageIndex + 1} of{' '}
           {table.getPageCount()}
         </div>
         <div className="flex gap-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="gap-1"
-          >
+  variant="outline"
+  size="sm"
+  onClick={() => table.previousPage()}
+  disabled={!table.getCanPreviousPage()}
+  className="
+    gap-1 rounded-xl
+    border-violet-soft/30
+    text-violet-soft
+    hover:bg-violet-soft/10
+  "
+>
+
             <ChevronLeft className="w-4 h-4" />
             Previous
           </Button>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="gap-1"
-          >
+  variant="outline"
+  size="sm"
+  onClick={() => table.nextPage()}
+  disabled={!table.getCanNextPage()}
+  className="
+    gap-1 rounded-xl
+    border-blue-soft/30
+    text-blue-soft
+    hover:bg-blue-soft/10
+  "
+>
+
             Next
             <ChevronRight className="w-4 h-4" />
           </Button>

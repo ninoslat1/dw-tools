@@ -20,8 +20,8 @@ export const ConversionTableSchema = (
               className="w-10 h-10 object-cover rounded border"
             />
             <div>
-              <p className="text-sm font-medium">{info.getValue()}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm font-medium font-dm text-bold">{info.getValue()}</p>
+              <p className="text-xs text-foreground font-is">
                 {row.sourceFormat.toUpperCase()} →{' '}
                 {row.targetFormat.toUpperCase()}
               </p>
@@ -37,8 +37,8 @@ export const ConversionTableSchema = (
         const date = new Date(info.getValue())
         return (
           <div className="text-sm">
-            <div className="font-medium">{date.toLocaleDateString()}</div>
-            <div className="text-muted-foreground">
+            <div className="font-xl text-bold font-dm text-violet-soft">{date.toLocaleDateString()}</div>
+            <div className="text-muted-foreground font-is">
               {date.toLocaleTimeString()}
             </div>
           </div>
@@ -69,19 +69,32 @@ export const ConversionTableSchema = (
     //   ),
     // }),
     columnHelper.display({
-      id: 'actions',
-      header: 'Actions',
-      cell: (info) => (
-        <div className="flex gap-2">
-          <DownloadActionButton
-            onClick={() => handleDownload(info.row.original)}
-          />
-          <DeleteActionButton
-            onClick={() => handleDelete(info.row.original.id)}
-          />
-        </div>
-      ),
-    }),
+  id: 'actions',
+  header: 'Actions',
+  cell: (info) => (
+    <div className="flex items-center gap-2">
+      <DownloadActionButton
+        onClick={() => handleDownload(info.row.original)}
+        className="
+          p-2 rounded-xl
+          bg-violet-soft/10 text-violet-soft
+          hover:bg-violet-soft hover:text-white
+          transition-colors
+        "
+      />
+      <DeleteActionButton
+        onClick={() => handleDelete(info.row.original.id)}
+        className="
+          p-2 rounded-xl
+          bg-red-50 text-red-500
+          hover:bg-red-500 hover:text-white
+          transition-colors
+        "
+      />
+    </div>
+  ),
+}),
+
   ]
 
   return columns

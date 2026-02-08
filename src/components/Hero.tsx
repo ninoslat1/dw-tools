@@ -9,6 +9,7 @@ export default function Hero() {
   pt-20 px-4 
   bg-gradient-to-b from-violet-soft/10 via-blue-soft/5 to-background
   "
+  id='#hero'
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Badge */}
@@ -37,7 +38,7 @@ export default function Hero() {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg md:text-xl text-foreground max-w-2xl mx-auto mb-8 text-balance font-is">
+        <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-balance font-is text-muted-foreground">
           <span className="font-dm font-bold text-violet-soft">Convert</span>,{' '}
           <span className="font-dm font-bold text-violet-soft">upscale</span>,
           and more — locally on your device. No uploads, no limits, and{' '}

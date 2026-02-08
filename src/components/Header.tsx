@@ -5,7 +5,7 @@ import { $page } from '@/stores/$store'
 
 export default function Header() {
   return (
-    <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
+    <header className="fixed top-0 w-full bg-background/50 backdrop-blur-sm border-b border-border z-50">
       <nav className="max-w-6xl mx-auto px-4 py-4 grid grid-cols-3 items-center">
         {/* Kiri */}
         <div>

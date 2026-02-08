@@ -1,16 +1,21 @@
-import { DownloadIcon } from 'lucide-react'
-import { Button } from './ui/button'
+import { Download } from "lucide-react"
 
-export function DownloadActionButton({ onClick }: { onClick: () => void }) {
+export const DownloadActionButton = ({
+  onClick,
+  className = "",
+}: {
+  onClick: () => void
+  className?: string
+}) => {
   return (
-    <Button
-      variant="outline"
-      size="sm"
+    <button
       onClick={onClick}
-      className="gap-1 hover:cursor-pointer"
+      className={`
+        inline-flex items-center justify-center hover:cursor-pointer
+        ${className}
+      `}
     >
-      <DownloadIcon className="w-4 h-4" />
-      <span className="hidden sm:inline">Download</span>
-    </Button>
+      <Download className="w-4 h-4" />
+    </button>
   )
 }
