@@ -1,24 +1,29 @@
-import type {ColumnHelper} from "@tanstack/react-table";
-import { DeleteActionButton } from "@/components/DeleteButton"
-import { DownloadActionButton } from "@/components/DownloadButton"
+import type { ColumnHelper } from '@tanstack/react-table'
+import { DeleteActionButton } from '@/components/DeleteButton'
+import { DownloadActionButton } from '@/components/DownloadButton'
 
-export const ConversionTableSchema = (columnHelper: ColumnHelper<TRecord>, handleDelete: (id: string) => void, handleDownload: (record: TConversionRecord) => void) => {
-    const columns = [
-    columnHelper.accessor("filename", {
-      header: "File Name",
+export const ConversionTableSchema = (
+  columnHelper: ColumnHelper<TRecord>,
+  handleDelete: (id: string) => void,
+  handleDownload: (record: TConversionRecord) => void,
+) => {
+  const columns = [
+    columnHelper.accessor('filename', {
+      header: 'File Name',
       cell: (info) => {
         const row = info.row.original
         return (
           <div className="flex items-center gap-3">
-            <img 
-              src={row.imageUrl} 
+            <img
+              src={row.imageUrl}
               alt={info.getValue()}
               className="w-10 h-10 object-cover rounded border"
             />
             <div>
               <p className="text-sm font-medium">{info.getValue()}</p>
               <p className="text-xs text-muted-foreground">
-                {row.sourceFormat.toUpperCase()} → {row.targetFormat.toUpperCase()}
+                {row.sourceFormat.toUpperCase()} →{' '}
+                {row.targetFormat.toUpperCase()}
               </p>
             </div>
           </div>
@@ -26,14 +31,16 @@ export const ConversionTableSchema = (columnHelper: ColumnHelper<TRecord>, handl
       },
       enableSorting: true,
     }),
-    columnHelper.accessor("timestamp", {
-      header: "Date & Time",
+    columnHelper.accessor('timestamp', {
+      header: 'Date & Time',
       cell: (info) => {
         const date = new Date(info.getValue())
         return (
           <div className="text-sm">
             <div className="font-medium">{date.toLocaleDateString()}</div>
-            <div className="text-muted-foreground">{date.toLocaleTimeString()}</div>
+            <div className="text-muted-foreground">
+              {date.toLocaleTimeString()}
+            </div>
           </div>
         )
       },
@@ -62,8 +69,8 @@ export const ConversionTableSchema = (columnHelper: ColumnHelper<TRecord>, handl
     //   ),
     // }),
     columnHelper.display({
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       cell: (info) => (
         <div className="flex gap-2">
           <DownloadActionButton

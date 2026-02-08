@@ -1,6 +1,5 @@
 // 'use client'
 
-
 // import { useRef } from "react"
 // import { $page } from "@/stores/$store"
 // import {
@@ -13,7 +12,6 @@
 //   SidebarMenuButton,
 //   SidebarMenuItem,
 // } from "@/components/ui/sidebar"
-
 
 // export function AppSidebar() {
 

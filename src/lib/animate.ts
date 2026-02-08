@@ -1,6 +1,10 @@
-import type { Dispatch, SetStateAction } from "react"
+import type { Dispatch, SetStateAction } from 'react'
 
-export const animateTo = (setProgress: Dispatch<SetStateAction<number>> ,target: number, speed = 10) => {
+export const animateTo = (
+  setProgress: Dispatch<SetStateAction<number>>,
+  target: number,
+  speed = 10,
+) => {
   setProgress((current: number) => {
     if (current >= target) return current
 

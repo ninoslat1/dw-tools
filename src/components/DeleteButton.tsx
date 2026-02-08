@@ -1,11 +1,7 @@
-import { DeleteIcon } from "lucide-react"
-import { Button } from "./ui/button"
+import { DeleteIcon } from 'lucide-react'
+import { Button } from './ui/button'
 
-export function DeleteActionButton({
-  onClick,
-}: {
-  onClick: () => void
-}) {
+export function DeleteActionButton({ onClick }: { onClick: () => void }) {
   return (
     <Button
       variant="outline"

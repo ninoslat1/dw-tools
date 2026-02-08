@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import sqlocal from 'sqlocal/vite';
+import sqlocal from 'sqlocal/vite'
 import mdx from '@mdx-js/rollup'
 
 import { tanstackRouter } from '@tanstack/router-plugin/vite'

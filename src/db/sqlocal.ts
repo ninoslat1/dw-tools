@@ -1,7 +1,7 @@
 // db/sqlocal.ts
 'use client'
 
-import { SQLocal } from 'sqlocal';
+import { SQLocal } from 'sqlocal'
 
 let sqlocalPromise: SQLocal | null = null
 

@@ -1,12 +1,7 @@
-import { DownloadIcon } from "lucide-react"
-import { Button } from "./ui/button"
+import { DownloadIcon } from 'lucide-react'
+import { Button } from './ui/button'
 
-export function DownloadActionButton({
-  onClick,
-}: {
-  onClick: () => void
-}) {
-
+export function DownloadActionButton({ onClick }: { onClick: () => void }) {
   return (
     <Button
       variant="outline"

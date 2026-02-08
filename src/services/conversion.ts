@@ -51,6 +51,5 @@ export const conversionService = {
         image WHERE uid = ${uid}
       `
     })
-    
-  } 
+  },
 }

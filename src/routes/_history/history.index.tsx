@@ -6,5 +6,5 @@ export const Route = createFileRoute('/_history/history/')({
 })
 
 function RouteComponent() {
-  return <HistoryTable/>
+  return <HistoryTable />
 }

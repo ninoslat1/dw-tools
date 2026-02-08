@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router"
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Link } from '@tanstack/react-router'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function CTA() {
   return (
@@ -11,10 +11,15 @@ export default function CTA() {
         </h2>
 
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Fast, high-quality conversion with zero setup — no login, no limits, completely free forever.
+          Fast, high-quality conversion with zero setup — no login, no limits,
+          completely free forever.
         </p>
 
-        <Button asChild size="lg" className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12 px-8">
+        <Button
+          asChild
+          size="lg"
+          className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12 px-8"
+        >
           <Link to="/history" className="flex items-center gap-2">
             Start Converting Now
             <ArrowRight className="w-5 h-5" />

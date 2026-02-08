@@ -5,7 +5,9 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
             <h3 className="font-bold text-lg mb-4">DigiWorks Solutions</h3>
-            <p className="text-muted-foreground text-sm font-is">Fast, free, and secure image conversion tool</p>
+            <p className="text-muted-foreground text-sm font-is">
+              Fast, free, and secure image conversion tool
+            </p>
           </div>
           <div>
             <h4 className="font-semibold mb-4 font-dm">Product</h4>

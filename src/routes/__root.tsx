@@ -8,7 +8,7 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <Outlet />
-      {import.meta.env.DEV ? 
+      {import.meta.env.DEV ? (
         <TanStackDevtools
           config={{
             position: 'bottom-right',
@@ -21,7 +21,7 @@ export const Route = createRootRoute({
             StoreDevtools,
           ]}
         />
-      : null}
+      ) : null}
     </>
   ),
 })

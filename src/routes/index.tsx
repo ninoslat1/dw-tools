@@ -16,7 +16,7 @@ function App() {
       <Hero />
       <Features />
       {/* <HowItWorks /> */}
-      <Dropzone/>
+      <Dropzone />
       {/* <CTA /> */}
       <Footer />
     </div>

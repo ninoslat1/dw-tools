@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  
-  
-  
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-} from "@tanstack/react-table"
+  useReactTable,
+} from '@tanstack/react-table'
 import { ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import type {ColumnFiltersState, PaginationState, SortingState} from "@tanstack/react-table";
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+} from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
 import { $page } from '@/stores/$store'
@@ -35,25 +36,25 @@ const HistoryTable = () => {
 
   const loadConversionHistory = useCallback(async () => {
     try {
-      const storedData = await conversionService.getConversion();
-      
+      const storedData = await conversionService.getConversion()
+
       if (storedData && storedData.length > 0) {
         const processedHistory: Array<TRecord> = storedData.map((item: any) => {
-          let finalUrl = "";
-          let blob: Blob | null = null;
+          let finalUrl = ''
+          let blob: Blob | null = null
 
           if (item.imageBlob) {
             try {
-              blob = new Blob([item.imageBlob], { 
-                type: `image/${item.targetFormat.toLowerCase()}` 
-              });
-              finalUrl = URL.createObjectURL(blob);
+              blob = new Blob([item.imageBlob], {
+                type: `image/${item.targetFormat.toLowerCase()}`,
+              })
+              finalUrl = URL.createObjectURL(blob)
             } catch (e) {
-              console.error("Gagal membuat Blob URL:", e);
+              console.error('Gagal membuat Blob URL:', e)
             }
           }
 
-          const filename = `${item.imageUrl}`;
+          const filename = `${item.imageUrl}`
 
           return {
             id: item.uid,
@@ -63,18 +64,18 @@ const HistoryTable = () => {
             filename,
             imageBlob: blob!,
             imageUrl: finalUrl,
-          };
-        });
+          }
+        })
 
-        setConversions(processedHistory);
+        setConversions(processedHistory)
       }
     } catch (error) {
-      console.error("Failed to load conversion history:", error);
+      console.error('Failed to load conversion history:', error)
     } finally {
       setIsLoading(false)
     }
   }, []) // ← Empty deps
-  
+
   const handleDelete = useCallback(async (id: string) => {
     try {
       setConversions((prev) => {
@@ -86,43 +87,43 @@ const HistoryTable = () => {
       })
 
       await conversionService.deleteConversion(id)
-      toast.success("Cached Image Deleted", {
-        description: "Cached image deleted successfully from device",
+      toast.success('Cached Image Deleted', {
+        description: 'Cached image deleted successfully from device',
         icon: <DeleteIcon size={16} />,
         classNames: {
-          toast: "gap-4",
-          icon: "mt-1",
-          title: "text-sm font-medium",
-          description: "text-xs text-muted-foreground",
+          toast: 'gap-4',
+          icon: 'mt-1',
+          title: 'text-sm font-medium',
+          description: 'text-xs text-muted-foreground',
         },
       })
-
     } catch (error) {
-      console.error("Failed to delete conversion:", error)
+      console.error('Failed to delete conversion:', error)
     }
   }, [])
 
   const filteredConversions = useMemo(() => {
     if (!nameFilter) return conversions
-    
+
     return conversions.filter((conversion) => {
-      return conversion.filename.toLowerCase().includes(nameFilter.toLowerCase())
+      return conversion.filename
+        .toLowerCase()
+        .includes(nameFilter.toLowerCase())
     })
   }, [conversions, nameFilter])
 
   const handleDownload = useCallback((record: TConversionRecord) => {
-    const link = document.createElement("a")
-    link.href = record.imageUrl          
-    link.download = record.filename      
+    const link = document.createElement('a')
+    link.href = record.imageUrl
+    link.download = record.filename
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }, [])
 
-
   const columns = useMemo(
     () => ConversionTableSchema(columnHelper, handleDelete, handleDownload),
-    [handleDelete, handleDownload]
+    [handleDelete, handleDownload],
   )
 
   const table = useReactTable({
@@ -139,7 +140,7 @@ const HistoryTable = () => {
   })
 
   useEffect(() => {
-    setPagination(prev => ({ ...prev, pageIndex: 0 }))
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [nameFilter])
 
   useEffect(() => {
@@ -168,9 +169,11 @@ const HistoryTable = () => {
     return (
       <div className="p-12 text-center">
         <h3 className="text-lg font-semibold mb-2">No conversions yet</h3>
-        <p className="text-muted-foreground mb-6">Start converting images to see your history here</p>
-        <Button onClick={() => $page.set("convert")} className="gap-2">
-            Start Converting
+        <p className="text-muted-foreground mb-6">
+          Start converting images to see your history here
+        </p>
+        <Button onClick={() => $page.set('convert')} className="gap-2">
+          Start Converting
         </Button>
       </div>
     )
@@ -195,17 +198,18 @@ const HistoryTable = () => {
           />
 
           {nameFilter && (
-            <div className='flex items-center justify-between w-full'>
-              <Button 
-                variant="ghost" 
+            <div className="flex items-center justify-between w-full">
+              <Button
+                variant="ghost"
                 size="sm"
                 onClick={() => setNameFilter('')}
               >
                 Clear
               </Button>
-            <div className="text-sm text-muted-foreground block">
-              Showing {filteredConversions.length} of {conversions.length} results
-            </div>
+              <div className="text-sm text-muted-foreground block">
+                Showing {filteredConversions.length} of {conversions.length}{' '}
+                results
+              </div>
             </div>
           )}
         </div>
@@ -220,41 +224,55 @@ const HistoryTable = () => {
                     className="px-6 py-3 text-left font-semibold text-foreground"
                     onClick={header.column.getToggleSortingHandler()}
                     style={{
-                      cursor: header.column.getCanSort() ? "pointer" : "default",
+                      cursor: header.column.getCanSort()
+                        ? 'pointer'
+                        : 'default',
                     }}
                   >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody>
-            {
-            table.getRowModel().rows.length > 0 ? 
-            (table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-6 py-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))) : (
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="border-b border-border hover:bg-muted/50 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="px-6 py-4">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan={table.getAllLeafColumns().length} className="text-center py-10">
+                <td
+                  colSpan={table.getAllLeafColumns().length}
+                  className="text-center py-10"
+                >
                   No conversion history
                 </td>
               </tr>
-            )
-            }
+            )}
           </tbody>
         </table>
       </div>
 
       <div className="flex items-center justify-between gap-4 p-4">
         <div className="text-sm text-muted-foreground">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()}
         </div>
         <div className="flex gap-2">
           <Button

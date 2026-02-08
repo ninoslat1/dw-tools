@@ -95,7 +95,7 @@ code {
 }
 
 @theme inline {
-  --animate-slide-collide: slide-collide 1.0s ease-out forwards;
+  --animate-slide-collide: slide-collide 1s ease-out forwards;
 
   @keyframes slide-collide {
     0% {
@@ -162,8 +162,8 @@ code {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-is: "Instrument Sans", sans-serif;
-  --font-dm: "DM Mono", sans-serif;
+  --font-is: 'Instrument Sans', sans-serif;
+  --font-dm: 'DM Mono', sans-serif;
 }
 
 @layer base {
@@ -177,12 +177,12 @@ code {
 
 html[data-scroll-locked][data-scroll-locked],
 body[data-scroll-locked][data-scroll-locked] {
-    overflow: visible !important;
-    margin-right: 0 !important;
-    padding-right: 0 !important;
-    --removed-body-scroll-bar-size: 0 !important;
+  overflow: visible !important;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+  --removed-body-scroll-bar-size: 0 !important;
 }
 
 html {
-    scrollbar-gutter: stable;
+  scrollbar-gutter: stable;
 }
