@@ -5,7 +5,6 @@ import Documentation from '@/components/Documentation'
 export const Route = createFileRoute('/docs/$page')({
   component: DocPage,
   loader: async ({ params: { page } }) => {
-    // Provide a default page if none specified
     const pageName = page || 'getting-started'
     try {
       return await import(`../../docs/${pageName}.mdx`)
