@@ -13,6 +13,8 @@ import { toast } from 'sonner'
 import { Link } from '@tanstack/react-router'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import NoHistory from './NoHistory'
+import LoadingHistory from './LoadingHistory'
 import type {
   ColumnFiltersState,
   PaginationState,
@@ -20,8 +22,6 @@ import type {
 } from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
-import NoHistory from './NoHistory'
-import LoadingHistory from './LoadingHistory'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -40,7 +40,7 @@ const HistoryTable = () => {
     try {
       const storedData = await conversionService.getConversion()
 
-      if (storedData && storedData.length > 0) {
+      // if (storedData && storedData.length > 0) {
         const processedHistory: Array<TRecord> = storedData.map((item: any) => {
           let finalUrl = ''
           let blob: Blob | null = null
@@ -70,7 +70,7 @@ const HistoryTable = () => {
         })
 
         setConversions(processedHistory)
-      }
+      // }
     } catch (error) {
       console.error('Failed to load conversion history:', error)
     } finally {
@@ -160,11 +160,11 @@ const HistoryTable = () => {
   }, [conversions])
 
   if (isLoading) {
-    return <LoadingHistory/>
+    return <LoadingHistory />
   }
 
   if (conversions.length === 0) {
-    return <NoHistory/>
+    return <NoHistory />
   }
 
   return (
@@ -189,7 +189,9 @@ const HistoryTable = () => {
             size="sm"
             className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10 font-is"
           >
-            <Link to="/" className='flex items-center gap-2'><ArrowLeft/> Back</Link>
+            <Link to="/" className="flex items-center gap-2">
+              <ArrowLeft /> Back
+            </Link>
           </Button>
 
           <Input

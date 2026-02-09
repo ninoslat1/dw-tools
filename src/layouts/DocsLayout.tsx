@@ -1,4 +1,5 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import type { ReactNode } from 'react'
+import { AppSidebar } from '@/components/app-sidebar'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,14 +7,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import type { ReactNode } from "react"
+} from '@/components/ui/sidebar'
 
 export function DocsLayout({ children }: { children: ReactNode }) {
   return (
@@ -42,9 +42,7 @@ export function DocsLayout({ children }: { children: ReactNode }) {
           </Breadcrumb>
         </header>
 
-        <div className="p-6 prose prose-invert max-w-none">
-          {children}
-        </div>
+        <div className="p-6 prose prose-invert max-w-none">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )
