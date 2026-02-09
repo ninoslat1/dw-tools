@@ -1,8 +1,8 @@
-import { Trash2 } from "lucide-react"
+import { Trash2 } from 'lucide-react'
 
 export const DeleteActionButton = ({
   onClick,
-  className = "",
+  className = '',
 }: {
   onClick: () => void
   className?: string

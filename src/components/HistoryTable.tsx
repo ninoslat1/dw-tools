@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-table'
 import { ArrowRight, ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
 import { toast } from 'sonner'
+import { Link } from '@tanstack/react-router'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import type {
@@ -19,7 +20,6 @@ import type {
 } from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
-import { Link } from '@tanstack/react-router'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -160,7 +160,9 @@ const HistoryTable = () => {
   if (isLoading) {
     return (
       <div className="p-8 text-center">
-        <p className="text-foreground font-semibold font-is">Loading conversion history...</p>
+        <p className="text-foreground font-semibold font-is">
+          Loading conversion history...
+        </p>
       </div>
     )
   }
@@ -173,7 +175,7 @@ const HistoryTable = () => {
           Start converting images to see your history here
         </p>
         <Button
-          // to="/" 
+          // to="/"
           className="
             bg-violet-soft text-white 
             hover:bg-violet-600 
@@ -181,41 +183,39 @@ const HistoryTable = () => {
             gap-2
           "
         >
-          <Link to="/" className='flex items-center gap-5'>
+          <Link to="/" className="flex items-center gap-5">
             <ArrowRight className="w-4 h-4" />
             Start Converting
           </Link>
         </Button>
-
       </div>
     )
   }
 
   return (
-    <div className="
+    <div
+      className="
   w-full py-8 px-4 
   min-h-screen
   bg-gradient-to-b from-violet-soft/8 via-blue-soft/5 to-background
-">
-
-      <div className="
+"
+    >
+      <div
+        className="
   overflow-x-auto space-y-4
   bg-white/60 backdrop-blur-sm 
   border border-violet-soft/10 
   rounded-2xl shadow-sm p-4
-">
-
+"
+      >
         <div className="flex gap-3 items-center px-5">
           <Button
-    variant="ghost"
-    size="sm"
-    className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10"
-  >
-    <Link to='/'>
-      ← Back
-    </Link>
-  </Button>
-
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10"
+          >
+            <Link to="/">← Back</Link>
+          </Button>
 
           <Input
             type="text"
@@ -231,7 +231,6 @@ const HistoryTable = () => {
   focus:shadow-none
   focus:outline-none
 "
-
           />
 
           {nameFilter && (
@@ -287,7 +286,6 @@ const HistoryTable = () => {
   hover:bg-violet-soft/5 
   transition-colors
 "
-
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-6 py-4">
@@ -320,34 +318,32 @@ const HistoryTable = () => {
         </div>
         <div className="flex gap-2">
           <Button
-  variant="outline"
-  size="sm"
-  onClick={() => table.previousPage()}
-  disabled={!table.getCanPreviousPage()}
-  className="
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="
     gap-1 rounded-xl
     border-violet-soft/30
     text-violet-soft
     hover:bg-violet-soft/10
   "
->
-
+          >
             <ChevronLeft className="w-4 h-4" />
             Previous
           </Button>
           <Button
-  variant="outline"
-  size="sm"
-  onClick={() => table.nextPage()}
-  disabled={!table.getCanNextPage()}
-  className="
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="
     gap-1 rounded-xl
     border-blue-soft/30
     text-blue-soft
     hover:bg-blue-soft/10
   "
->
-
+          >
             Next
             <ChevronRight className="w-4 h-4" />
           </Button>

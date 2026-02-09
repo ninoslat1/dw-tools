@@ -1,0 +1,18 @@
+
+---
+
+### `src/docs/installation.mdx`
+
+```mdx
+# 📦 Installation (Self-Host dengan Docker)
+
+## 1. Pull Image
+
+```bash
+docker pull yourimage:latest
+
+docker run -d \
+  -p 3000:3000 \
+  --name image-converter \
+  yourimage:latest
+

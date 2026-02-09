@@ -157,8 +157,6 @@ export default function Dropzone() {
           timestamp: new Date().toISOString(),
         })
         setTargetProgress(85)
-
-        // setConvertedBlob(finalBlob)
         downloadBlob(finalBlob, newFilename)
         setTargetProgress(100)
       } else {
@@ -171,8 +169,6 @@ export default function Dropzone() {
           timestamp: new Date().toISOString(),
         })
         setTargetProgress(85)
-
-        // setConvertedBlob(blob)
         downloadBlob(blob, newFilename)
         setTargetProgress(100)
       }
@@ -196,7 +192,7 @@ export default function Dropzone() {
         <div className="text-center mb-12">
           <h2
             className="
-            text-4xl md:text-5xl font-bold mb-4 
+            text-4xl md:text-5xl font-bold mb-4 py-2
             bg-gradient-to-r from-violet-soft to-blue-soft 
             bg-clip-text text-transparent
             font-dm

@@ -1,8 +1,8 @@
-import { Download } from "lucide-react"
+import { Download } from 'lucide-react'
 
 export const DownloadActionButton = ({
   onClick,
-  className = "",
+  className = '',
 }: {
   onClick: () => void
   className?: string

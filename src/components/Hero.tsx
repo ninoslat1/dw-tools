@@ -9,7 +9,7 @@ export default function Hero() {
   pt-20 px-4 
   bg-gradient-to-b from-violet-soft/10 via-blue-soft/5 to-background
   "
-  id='#hero'
+      id="#hero"
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Badge */}

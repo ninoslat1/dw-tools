@@ -65,7 +65,6 @@ export default function Features() {
             <Card
               key={feature.title}
               className="
-              hover:cursor-pointer
   bg-white/60 backdrop-blur-sm 
   border border-violet-soft/10 
   rounded-2xl 
