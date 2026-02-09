@@ -1,5 +1,5 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/docs/")({
-  component: () => <Navigate to="/docs/getting-started" />
+  component: () => <Navigate to="/docs/$page" params={{ page: 'getting-started' }} />
 })

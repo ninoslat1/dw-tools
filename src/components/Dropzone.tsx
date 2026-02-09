@@ -362,7 +362,7 @@ export default function Dropzone() {
                 <div className="flex items-center gap-3">
                   <Progress
                     value={targetProgress}
-                    className="h-2 rounded-full bg-violet-soft/10"
+                    className="h-2 rounded-full bg-violet-soft/10 [&>div]:bg-violet-soft [&>div]:rounded-full"
                   />
 
                   <p className="text-xs text-muted-foreground w-10 text-right">

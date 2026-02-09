@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ArrowRight, ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Link } from '@tanstack/react-router'
 import { Button } from './ui/button'
@@ -20,6 +20,8 @@ import type {
 } from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
+import NoHistory from './NoHistory'
+import LoadingHistory from './LoadingHistory'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -158,38 +160,11 @@ const HistoryTable = () => {
   }, [conversions])
 
   if (isLoading) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-foreground font-semibold font-is">
-          Loading conversion history...
-        </p>
-      </div>
-    )
+    return <LoadingHistory/>
   }
 
   if (conversions.length === 0) {
-    return (
-      <div className="p-12 text-center">
-        <h3 className="text-lg font-semibold mb-2">No conversions yet</h3>
-        <p className="text-muted-foreground mb-6">
-          Start converting images to see your history here
-        </p>
-        <Button
-          // to="/"
-          className="
-            bg-violet-soft text-white 
-            hover:bg-violet-600 
-            rounded-xl shadow-sm
-            gap-2
-          "
-        >
-          <Link to="/" className="flex items-center gap-5">
-            <ArrowRight className="w-4 h-4" />
-            Start Converting
-          </Link>
-        </Button>
-      </div>
-    )
+    return <NoHistory/>
   }
 
   return (
@@ -212,9 +187,9 @@ const HistoryTable = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10"
+            className="gap-1 text-violet-soft hover:text-violet-soft duration-200 hover:bg-violet-soft/10 font-is"
           >
-            <Link to="/">← Back</Link>
+            <Link to="/" className='flex items-center gap-2'><ArrowLeft/> Back</Link>
           </Button>
 
           <Input
