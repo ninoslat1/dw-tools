@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import { SQLocal } from 'sqlocal'
 import { Button } from './ui/button'
@@ -10,13 +10,15 @@ const NoHistory = () => {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [fileProcess, setFileProcess] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0]
     if (selectedFile && selectedFile.name.endsWith('.sqlite3')) {
       processFile(selectedFile)
     } else {
-      alert('Please select a valid SQLite file (.sqlite or .db)')
+      alert('Please select a valid SQLite file (.sqlite3)')
     }
   }
 
@@ -38,10 +40,10 @@ const NoHistory = () => {
     setIsDragging(false)
 
     const droppedFile = e.dataTransfer.files[0]
-    if (droppedFile.name.endsWith('.sqlite3')) {
+    if (droppedFile && droppedFile.name.endsWith('.sqlite3')) {
       processFile(droppedFile)
     } else {
-      alert('Please drop a valid SQLite file (.sqlite or .db)')
+      alert('Please drop a valid SQLite file (.sqlite3)')
     }
   }
 
@@ -51,49 +53,71 @@ const NoHistory = () => {
 
   const processFile = async (file: File) => {
     let tempDbInstance: SQLocal | null = null
+    const tempDbName = `temp_validation_${Date.now()}.sqlite`
 
     try {
       setFileProcess(true)
+      setError(null)
 
       const arrayBuffer = await file.arrayBuffer()
       const uint8Array = new Uint8Array(arrayBuffer)
 
-      const tempDbName = `temp_${Date.now()}.sqlite`
       const opfs = await navigator.storage.getDirectory()
 
-      const tempFileHandle = await opfs.getFileHandle(file.name, {
+      // Write temp file for validation
+      const tempFileHandle = await opfs.getFileHandle(tempDbName, {
         create: true,
       })
-      const writable = await tempFileHandle.createWritable()
+      const tempWritable = await tempFileHandle.createWritable()
+      await tempWritable.write(uint8Array)
+      await tempWritable.close()
 
-      await writable.write(uint8Array)
-      await writable.close()
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
+      // Validate the database
       tempDbInstance = new SQLocal(tempDbName)
       const { sql: tempSql } = tempDbInstance
 
       try {
         await validateDatabase(tempSql)
       } catch (validationError: any) {
+        // Cleanup on validation failure
+        if (tempDbInstance && typeof tempDbInstance.destroy === 'function') {
+          await tempDbInstance.destroy()
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100))
         try {
           await opfs.removeEntry(tempDbName)
         } catch (e) {
-          alert(
-            `Failed to clean up temp file: ${e instanceof Error ? e.message : 'Internal Server Error'}`,
-          )
+          console.error('Failed to clean up temp file:', e)
         }
+        throw validationError
       }
 
+      // Close temp database
       if (tempDbInstance && typeof tempDbInstance.destroy === 'function') {
         await tempDbInstance.destroy()
       }
 
       await new Promise((resolve) => setTimeout(resolve, 100))
 
-      await opfs.removeEntry(tempDbName)
-      await opfs.removeEntry(TARGET_DB_NAME)
+      // Remove temp file
+      try {
+        await opfs.removeEntry(tempDbName)
+      } catch (e) {
+        console.warn('Could not remove temp file:', e)
+      }
+
+      // Remove old target database if exists
+      try {
+        await opfs.removeEntry(TARGET_DB_NAME)
+      } catch (e) {
+        // File doesn't exist, that's fine
+      }
+
       await new Promise((resolve) => setTimeout(resolve, 100))
 
+      // Write final database
       const finalFileHandle = await opfs.getFileHandle(TARGET_DB_NAME, {
         create: true,
       })
@@ -102,10 +126,23 @@ const NoHistory = () => {
       await finalWritable.close()
 
       await new Promise((resolve) => setTimeout(resolve, 100))
-      alert(`✓ SQLite file successfully imported!`)
-    } catch (error) {
+
+      // Verify final database
+      const finalDb = new SQLocal(TARGET_DB_NAME)
+      const records = await finalDb.sql`SELECT COUNT(*) as count FROM image`
+
+      console.log(`Database imported successfully with ${records[0].count} records`)
+      
+      alert(`✓ SQLite file successfully imported!\nRecords: ${records[0].count}`)
+
+      // Navigate to history page instead of reloading
+      navigate({ to: '/history' })
+      
+    } catch (error: any) {
+      console.error('Error processing file:', error)
+      setError(error.message || 'Failed to process SQLite file')
+      alert(`❌ Error: ${error.message || 'Failed to process SQLite file'}`)
     } finally {
-      window.location.reload()
       setFileProcess(false)
     }
   }
@@ -138,14 +175,20 @@ const NoHistory = () => {
         </span>
       </p>
 
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 rounded border border-red-200 inline-block max-w-md">
+          <p className="text-sm text-red-800">❌ {error}</p>
+        </div>
+      )}
+
       <Button
         className="
-                    bg-violet-soft text-white 
-                    hover:bg-violet-600 
-                    rounded-xl shadow-sm
-                    gap-2
-                    font-is
-                "
+          bg-violet-soft text-white 
+          hover:bg-violet-600 
+          rounded-xl shadow-sm
+          gap-2
+          font-is
+        "
         disabled={fileProcess}
       >
         <Link to="/" className="flex items-center gap-5">
