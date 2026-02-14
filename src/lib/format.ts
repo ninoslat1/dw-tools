@@ -1,10 +1,12 @@
-export const REQUIRED_TABLE = 'image'
-export const REQUIRED_FIELDS = [
-  'uid',
-  'timestamp',
-  'imageUrl',
-  'imageBlob',
-  'sourceFormat',
-  'targetFormat',
-]
-export const TARGET_DB_NAME = 'dwimgconv.sqlite'
+export const EXPECTED_STRUCTURE = {
+  database: 'dwimgconv',
+  table: 'image',
+  fields: {
+    uid: { type: 'TEXT', pk: true, notnull: false },
+    timestamp: { type: 'TEXT', pk: false, notnull: true },
+    imageUrl: { type: 'TEXT', pk: false, notnull: false },
+    imageBlob: { type: 'BLOB', pk: false, notnull: false },
+    sourceFormat: { type: 'TEXT', pk: false, notnull: true },
+    targetFormat: { type: 'TEXT', pk: false, notnull: true }
+  }
+};
