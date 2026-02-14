@@ -9,12 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HistoryRouteRouteImport } from './routes/history.route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsPageRouteImport } from './routes/docs/$page'
-import { Route as HistoryHistoryRouteImport } from './routes/_history/history'
-import { Route as HistoryHistoryIndexRouteImport } from './routes/_history/history.index'
 
+const HistoryRouteRoute = HistoryRouteRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -30,61 +34,50 @@ const DocsPageRoute = DocsPageRouteImport.update({
   path: '/docs/$page',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HistoryHistoryRoute = HistoryHistoryRouteImport.update({
-  id: '/_history/history',
-  path: '/history',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoryHistoryIndexRoute = HistoryHistoryIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => HistoryHistoryRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/history': typeof HistoryHistoryRouteWithChildren
+  '/history': typeof HistoryRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs': typeof DocsIndexRoute
-  '/history/': typeof HistoryHistoryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs': typeof DocsIndexRoute
-  '/history': typeof HistoryHistoryIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_history/history': typeof HistoryHistoryRouteWithChildren
+  '/history': typeof HistoryRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs/': typeof DocsIndexRoute
-  '/_history/history/': typeof HistoryHistoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history' | '/docs/$page' | '/docs' | '/history/'
+  fullPaths: '/' | '/history' | '/docs/$page' | '/docs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/docs/$page' | '/docs' | '/history'
-  id:
-    | '__root__'
-    | '/'
-    | '/_history/history'
-    | '/docs/$page'
-    | '/docs/'
-    | '/_history/history/'
+  to: '/' | '/history' | '/docs/$page' | '/docs'
+  id: '__root__' | '/' | '/history' | '/docs/$page' | '/docs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  HistoryHistoryRoute: typeof HistoryHistoryRouteWithChildren
+  HistoryRouteRoute: typeof HistoryRouteRoute
   DocsPageRoute: typeof DocsPageRoute
   DocsIndexRoute: typeof DocsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -106,38 +99,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsPageRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_history/history': {
-      id: '/_history/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryHistoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_history/history/': {
-      id: '/_history/history/'
-      path: '/'
-      fullPath: '/history/'
-      preLoaderRoute: typeof HistoryHistoryIndexRouteImport
-      parentRoute: typeof HistoryHistoryRoute
-    }
   }
 }
 
-interface HistoryHistoryRouteChildren {
-  HistoryHistoryIndexRoute: typeof HistoryHistoryIndexRoute
-}
-
-const HistoryHistoryRouteChildren: HistoryHistoryRouteChildren = {
-  HistoryHistoryIndexRoute: HistoryHistoryIndexRoute,
-}
-
-const HistoryHistoryRouteWithChildren = HistoryHistoryRoute._addFileChildren(
-  HistoryHistoryRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  HistoryHistoryRoute: HistoryHistoryRouteWithChildren,
+  HistoryRouteRoute: HistoryRouteRoute,
   DocsPageRoute: DocsPageRoute,
   DocsIndexRoute: DocsIndexRoute,
 }
