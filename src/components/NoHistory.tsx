@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { loadDatabase, runFullValidation } from '@/lib/database-validator'
@@ -9,6 +9,7 @@ const NoHistory = () => {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isValidating, setIsValidating] = useState(false)
+  const navigate = useNavigate({ from: '/history' })
   const [_, setValidationStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +79,7 @@ const NoHistory = () => {
       await writable.close()
 
       setValidationStatus('success')
-      window.location.reload()      
+      navigate({to: "/history"});     
     } catch (error) {
       console.error('Error processing file:', error)
       setValidationStatus('error')
