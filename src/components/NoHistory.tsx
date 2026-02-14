@@ -79,7 +79,7 @@ const NoHistory = () => {
       await writable.close()
 
       setValidationStatus('success')
-      navigate({to: "/"});     
+      navigate({to: "/history"});     
     } catch (error) {
       console.error('Error processing file:', error)
       setValidationStatus('error')
