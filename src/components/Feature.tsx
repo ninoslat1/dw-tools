@@ -41,7 +41,6 @@ export default function Features() {
   "
     >
       <div className="max-w-6xl mx-auto">
-        {/* Headline */}
         <div className="text-center mb-16">
           <h2
             className="
@@ -59,7 +58,6 @@ export default function Features() {
           </p>
         </div>
 
-        {/* Feature Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature) => (
             <Card

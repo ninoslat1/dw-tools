@@ -10,3 +10,5 @@ export const EXPECTED_STRUCTURE = {
     targetFormat: { type: 'TEXT', pk: false, notnull: true }
   }
 };
+
+export const TOAST_DURATION = 2000

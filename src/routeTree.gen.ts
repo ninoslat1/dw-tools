@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ImportRouteRouteImport } from './routes/import.route'
 import { Route as HistoryRouteRouteImport } from './routes/history.route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsPageRouteImport } from './routes/docs/$page'
 
+const ImportRouteRoute = ImportRouteRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryRouteRoute = HistoryRouteRouteImport.update({
   id: '/history',
   path: '/history',
@@ -38,12 +44,14 @@ const DocsPageRoute = DocsPageRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
+  '/import': typeof ImportRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs': typeof DocsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
+  '/import': typeof ImportRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs': typeof DocsIndexRoute
 }
@@ -51,26 +59,35 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
+  '/import': typeof ImportRouteRoute
   '/docs/$page': typeof DocsPageRoute
   '/docs/': typeof DocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history' | '/docs/$page' | '/docs'
+  fullPaths: '/' | '/history' | '/import' | '/docs/$page' | '/docs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/history' | '/docs/$page' | '/docs'
-  id: '__root__' | '/' | '/history' | '/docs/$page' | '/docs/'
+  to: '/' | '/history' | '/import' | '/docs/$page' | '/docs'
+  id: '__root__' | '/' | '/history' | '/import' | '/docs/$page' | '/docs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HistoryRouteRoute: typeof HistoryRouteRoute
+  ImportRouteRoute: typeof ImportRouteRoute
   DocsPageRoute: typeof DocsPageRoute
   DocsIndexRoute: typeof DocsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/import': {
+      id: '/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof ImportRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history': {
       id: '/history'
       path: '/history'
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HistoryRouteRoute: HistoryRouteRoute,
+  ImportRouteRoute: ImportRouteRoute,
   DocsPageRoute: DocsPageRoute,
   DocsIndexRoute: DocsIndexRoute,
 }

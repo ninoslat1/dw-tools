@@ -22,6 +22,7 @@ import type {
 } from '@tanstack/react-table'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
+import { TOAST_DURATION } from '@/lib/format'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -39,8 +40,6 @@ const HistoryTable = () => {
   const loadConversionHistory = useCallback(async () => {
     try {
       const storedData = await conversionService.getConversion()
-
-      // if (storedData && storedData.length > 0) {
         const processedHistory: Array<TRecord> = storedData.map((item: any) => {
           let finalUrl = ''
           let blob: Blob | null = null
@@ -70,9 +69,11 @@ const HistoryTable = () => {
         })
 
         setConversions(processedHistory)
-      // }
     } catch (error) {
-      console.error('Failed to load conversion history:', error)
+      toast.warning('Error Load Conversion', {
+        description: `Failed to load conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        duration: TOAST_DURATION
+      })
     } finally {
       setIsLoading(false)
     }
@@ -100,7 +101,10 @@ const HistoryTable = () => {
         },
       })
     } catch (error) {
-      console.error('Failed to delete conversion:', error)
+      toast.warning('Error Delete Conversion', {
+        description: `Failed to delete conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        duration: TOAST_DURATION
+      })
     }
   }, [])
 
