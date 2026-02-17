@@ -105,39 +105,53 @@ const HistoryTable = () => {
     }
   }, [page, pageSize, sort, dir, search])
 
-  const handleDelete = useCallback(async (id: string) => {
-    try {
-      setConversions((prev) => {
-        const record = prev.find((c) => c.id === id)
-        if (record?.imageUrl) {
-          URL.revokeObjectURL(record.imageUrl)
-        }
-        return prev.filter((c) => c.id !== id)
-      })
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        setConversions((prev) => {
+          const record = prev.find((c) => c.id === id)
+          if (record?.imageUrl) {
+            URL.revokeObjectURL(record.imageUrl)
+          }
+          return prev.filter((c) => c.id !== id)
+        })
 
-      await conversionService.deleteConversion(id)
-      toast.success('Cached Image Deleted', {
-        description: 'Cached image deleted successfully from device',
-        icon: <DeleteIcon size={16} />,
-        classNames: {
-          toast: 'gap-4',
-          icon: 'mt-1',
-          title: 'text-sm font-medium',
-          description: 'text-xs text-muted-foreground !text-violet-soft/75',
-          success: '!bg-violet-soft/10 !text-violet-soft !font-is',
-        },
-      })
-    } catch (error) {
-      toast.warning('Error Delete Conversion', {
-        description: `Failed to delete conversion history: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
-        duration: TOAST_DURATION,
-        classNames: {
-          warning: '!bg-yellow-300/10 !text-black !font-is',
-          description: '!text-yellow-300/75',
-        },
-      })
-    }
-  }, [])
+        await conversionService.deleteConversion(id)
+        toast.success('Cached Image Deleted', {
+          description: 'Cached image deleted successfully from device',
+          icon: <DeleteIcon size={16} />,
+          classNames: {
+            toast: 'gap-4',
+            icon: 'mt-1',
+            title: 'text-sm font-medium',
+            description: 'text-xs text-muted-foreground !text-violet-soft/75',
+            success: '!bg-violet-soft/10 !text-violet-soft !font-is',
+          },
+        })
+
+        if (conversions.length === 1 && page > 0) {
+          navigate({
+            search: (prev) => ({
+              ...prev,
+              page: page - 1,
+            }),
+          })
+        } else {
+          await loadConversionHistory()
+        }
+      } catch (error) {
+        toast.warning('Error Delete Conversion', {
+          description: `Failed to delete conversion history: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
+          duration: TOAST_DURATION,
+          classNames: {
+            warning: '!bg-yellow-300/10 !text-black !font-is',
+            description: '!text-yellow-300/75',
+          },
+        })
+      }
+    },
+    [loadConversionHistory],
+  )
 
   const handleDownload = useCallback((record: TConversionRecord) => {
     const link = document.createElement('a')

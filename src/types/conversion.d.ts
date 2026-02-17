@@ -18,10 +18,12 @@ type TRecord = {
   imageUrl: string
 }
 
+type TSupportedMimeType = 'image/jpeg' | 'image/png' | 'image/webp'
+
 type TCompressOptions = {
   quality?: number
   maxWidth?: number
   maxHeight?: number
-  outputType?: 'image/jpeg' | 'image/webp' | 'image/png'
+  outputType?: TSupportedMimeType
   mode?: 'basic' | 'normal' | 'ultra' | ''
 }

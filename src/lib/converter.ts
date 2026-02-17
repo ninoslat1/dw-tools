@@ -92,7 +92,6 @@ export const compressImageBlob = async (
     mode = 'none',
   } = options
 
-  // 👉 Jika user tidak memilih mode → langsung kembalikan blob asli
   if (!mode) {
     return blob
   }
