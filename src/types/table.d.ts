@@ -10,3 +10,12 @@ interface ImageTable {
 interface Database {
   image: ImageTable
 }
+
+type TableInfoRow = [
+  cid: number,
+  name: string,
+  type: string,
+  notnull: number,
+  dflt_value: any,
+  pk: number,
+]

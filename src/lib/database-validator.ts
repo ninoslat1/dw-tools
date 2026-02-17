@@ -47,28 +47,16 @@ export const validateTableStructure = async (db: SQLocal): Promise<void> => {
     { type: string; pk: boolean; notnull: boolean }
   > = {}
   const { rows } = schema
+  const typedRows = rows as Array<TableInfoRow>
+  typedRows.forEach((field) => {
+    const [, name, type, notnull, pk] = field
 
-  // @ts-expect-error
-  rows.forEach(
-    (
-      field: [
-        cid: number,
-        name: string,
-        type: string,
-        notnull: number,
-        dflt_value: any,
-        pk: number,
-      ],
-    ) => {
-      const [_, name, type, notnull, __, pk] = field
-
-      foundFields[name] = {
-        type,
-        notnull: notnull === 1,
-        pk: pk === 1,
-      }
-    },
-  )
+    foundFields[name] = {
+      type,
+      notnull: notnull === 1,
+      pk: pk === 1,
+    }
+  })
 
   Object.entries(EXPECTED_STRUCTURE.fields).forEach(
     ([fieldName, expectedProps]) => {
