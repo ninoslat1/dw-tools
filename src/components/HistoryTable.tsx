@@ -12,16 +12,13 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import NoHistory from './NoHistory'
 import LoadingHistory from './LoadingHistory'
-import type {
-  PaginationState,
-  SortingState,
-} from '@tanstack/react-table'
+import ExportButton from './ExportButton'
+import type { PaginationState, SortingState } from '@tanstack/react-table'
+import type { TSortColumn } from '@/types/page-query'
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
 import { TOAST_DURATION } from '@/lib/format'
-import ExportButton from './ExportButton'
 import { Route } from '@/routes/history.route'
-
 
 const HistoryTable = () => {
   const columnHelper = createColumnHelper<TRecord>()
@@ -33,6 +30,13 @@ const HistoryTable = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [inputValue, setInputValue] = useState(search)
+
+  const allowedSortColumns: Array<TSortColumn> = [
+    'timestamp',
+    'imageUrl',
+    'sourceFormat',
+    'targetFormat',
+  ]
 
   useEffect(() => {
     setInputValue(search)
@@ -54,15 +58,13 @@ const HistoryTable = () => {
     try {
       setIsLoading(true)
 
-      const { rows, total } =
-      await conversionService.getConversions({
+      const { rows, total } = await conversionService.getConversions({
         pageIndex: page,
         pageSize,
         sortColumn: sort,
         sortDirection: dir.toUpperCase(),
         nameFilter: search,
       })
-
 
       const processed = rows.map((item: any) => {
         let finalUrl = ''
@@ -88,23 +90,20 @@ const HistoryTable = () => {
 
       setConversions(processed)
       setTotalCount(total)
-
     } catch (error) {
       console.error(error)
       toast.warning('Error Load Conversion', {
-        description: `Failed to load conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        description: `Failed to load conversion history: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
         duration: TOAST_DURATION,
         classNames: {
-          warning: "!bg-yellow-300/10 !text-black !font-is",
-          description: "!text-black"
-        }
+          warning: '!bg-yellow-300/10 !text-black !font-is',
+          description: '!text-black',
+        },
       })
     } finally {
       setIsLoading(false)
     }
   }, [page, pageSize, sort, dir, search])
-
-
 
   const handleDelete = useCallback(async (id: string) => {
     try {
@@ -125,17 +124,17 @@ const HistoryTable = () => {
           icon: 'mt-1',
           title: 'text-sm font-medium',
           description: 'text-xs text-muted-foreground !text-violet-soft/75',
-          success: "!bg-violet-soft/10 !text-violet-soft !font-is",
+          success: '!bg-violet-soft/10 !text-violet-soft !font-is',
         },
       })
     } catch (error) {
       toast.warning('Error Delete Conversion', {
-        description: `Failed to delete conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        description: `Failed to delete conversion history: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
         duration: TOAST_DURATION,
         classNames: {
-          warning: "!bg-yellow-300/10 !text-black !font-is",
-          description: "!text-yellow-300/75"
-        }
+          warning: '!bg-yellow-300/10 !text-black !font-is',
+          description: '!text-yellow-300/75',
+        },
       })
     }
   }, [])
@@ -162,10 +161,7 @@ const HistoryTable = () => {
     manualPagination: true,
     manualSorting: true,
     onPaginationChange: (updater) => {
-      const next =
-        typeof updater === 'function'
-          ? updater(pagination)
-          : updater
+      const next = typeof updater === 'function' ? updater(pagination) : updater
 
       navigate({
         search: (prev) => ({
@@ -176,17 +172,19 @@ const HistoryTable = () => {
       })
     },
     onSortingChange: (updater) => {
-      const next =
-        typeof updater === 'function'
-          ? updater(sorting)
-          : updater
+      const next = typeof updater === 'function' ? updater(sorting) : updater
 
       const first = next[0]
+
+      const safeSort: TSortColumn =
+        first && allowedSortColumns.includes(first.id as TSortColumn)
+          ? (first.id as TSortColumn)
+          : 'timestamp'
 
       navigate({
         search: (prev) => ({
           ...prev,
-          sort: first?.id ?? 'timestamp',
+          sort: safeSort,
           dir: first?.desc ? 'desc' : 'asc',
         }),
       })
@@ -197,7 +195,6 @@ const HistoryTable = () => {
   useEffect(() => {
     loadConversionHistory()
   }, [loadConversionHistory])
-
 
   useEffect(() => {
     return () => {
@@ -292,13 +289,12 @@ const HistoryTable = () => {
               </Button>
 
               <div className="text-sm text-muted-foreground block">
-                Showing {conversions.length} of {totalCount}{' '}
-                results
+                Showing {conversions.length} of {totalCount} results
               </div>
             </div>
           )}
-          <div className='ml-auto'>
-            <ExportButton/>
+          <div className="ml-auto">
+            <ExportButton />
           </div>
         </div>
 

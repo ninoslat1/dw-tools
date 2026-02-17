@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Download, Loader2, Upload, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { Label } from './ui/label'
 import { Progress } from './ui/progress'
 import type { DragEvent } from 'react'
@@ -18,20 +19,25 @@ import {
 import { compressImageBlob, convertImage, downloadBlob } from '@/lib/converter'
 import { conversionService } from '@/services/conversion'
 import { animateTo } from '@/lib/animate'
-import { toast } from 'sonner'
 import { TOAST_DURATION } from '@/lib/format'
 
 export default function Dropzone() {
   const [file, setFile] = useState<File | null>(null)
-  const [selectedFormat, setSelectedFormat] = useState<'png' | 'jpeg' | 'jpg' | 'webp' | 'avif' | ''>('')
+  const [selectedFormat, setSelectedFormat] = useState<
+    'png' | 'jpeg' | 'jpg' | 'webp' | 'avif' | ''
+  >('')
   const [isConverting, setIsConverting] = useState(false)
   const [dbReady, setDbReady] = useState(false)
-  const [getDatabaseFile, setGetDatabaseFile] = useState<(() => Promise<File>) | null>(null)
+  const [getDatabaseFile, setGetDatabaseFile] = useState<
+    (() => Promise<File>) | null
+  >(null)
   const [targetProgress, setTargetProgress] = useState(0)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const availableFormat = ['png', 'jpeg', 'jpg', 'webp', 'avif']
   const format = file?.name.split('.').pop()?.toLowerCase()
-  const [compressMode, setCompressMode] = useState<'basic' | 'normal' | 'ultra' | 'none'>('none')
+  const [compressMode, setCompressMode] = useState<
+    'basic' | 'normal' | 'ultra' | 'none'
+  >('none')
 
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
@@ -163,12 +169,12 @@ export default function Dropzone() {
     } catch (error) {
       // alert('Failed to convert image. Please try again.')
       toast.error('Fail Convert Image', {
-        description: `Failed to convert image: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        description: `Failed to convert image: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
         duration: TOAST_DURATION,
         classNames: {
-          warning: "!bg-red-400/10 !text-black !font-is",
-          description: "!text-red-400/75"
-        }
+          warning: '!bg-red-400/10 !text-black !font-is',
+          description: '!text-red-400/75',
+        },
       })
       setTargetProgress(0)
     } finally {

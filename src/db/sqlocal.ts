@@ -33,7 +33,7 @@ export function getSQLocal(): SQLocal {
 
 export async function resetSQLocal() {
   if (sqlocalPromise) {
-    await sqlocalPromise.destroy();
+    await sqlocalPromise.destroy()
     sqlocalPromise = null
   }
 }

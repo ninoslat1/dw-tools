@@ -20,7 +20,17 @@ export default function CTA() {
           size="lg"
           className="bg-primary text-primary-foreground hover:opacity-90 gap-2 h-12 px-8"
         >
-          <Link to="/history" className="flex items-center gap-2">
+          <Link
+            to="/history"
+            search={{
+              page: 0,
+              pageSize: 10,
+              search: '',
+              sort: 'timestamp',
+              dir: 'desc',
+            }}
+            className="flex items-center gap-2"
+          >
             Start Converting Now
             <ArrowRight className="w-5 h-5" />
           </Link>

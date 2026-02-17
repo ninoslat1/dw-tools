@@ -1,6 +1,6 @@
 import { Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import { EXPECTED_STRUCTURE, TOAST_DURATION } from '@/lib/format'
 
 export default function ExportButton() {
@@ -9,7 +9,7 @@ export default function ExportButton() {
       const root = await navigator.storage.getDirectory()
 
       const fileHandle = await root.getFileHandle(
-        `${EXPECTED_STRUCTURE.database}.sqlite3`
+        `${EXPECTED_STRUCTURE.database}.sqlite3`,
       )
 
       const file = await fileHandle.getFile()
@@ -32,21 +32,19 @@ export default function ExportButton() {
         description: 'Database downloaded successfully.',
         duration: TOAST_DURATION,
         classNames: {
-          success: "!bg-violet-soft/10 !text-violet-soft !font-is",
-          description: "!text-violet-soft/75"
-        }
+          success: '!bg-violet-soft/10 !text-violet-soft !font-is',
+          description: '!text-violet-soft/75',
+        },
       })
     } catch (error) {
       toast.error('Download Failed', {
         description:
-          error instanceof Error
-            ? error.message
-            : 'Database file not found.',
+          error instanceof Error ? error.message : 'Database file not found.',
         duration: TOAST_DURATION,
         classNames: {
-          warning: "!bg-red-400/10 !text-black !font-is",
-          description: "!text-red-400/75"
-        }
+          warning: '!bg-red-400/10 !text-black !font-is',
+          description: '!text-red-400/75',
+        },
       })
     }
   }

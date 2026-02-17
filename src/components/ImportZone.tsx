@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react'
-import { Upload, Loader2 } from 'lucide-react'
+import { Loader2, Upload } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { EXPECTED_STRUCTURE, TOAST_DURATION } from '@/lib/format'
 import { loadDatabase, runFullValidation } from '@/lib/database-validator'
-import { useNavigate } from '@tanstack/react-router'
-import { toast } from 'sonner'
 
 export default function Importzone() {
   const [file, setFile] = useState<File | null>(null)
@@ -22,7 +22,7 @@ export default function Importzone() {
     } else {
       toast.warning('Error processing file', {
         description: `Please drop a valid SQLite file`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
       })
     }
   }
@@ -36,7 +36,6 @@ export default function Importzone() {
   const openFileDialog = () => {
     inputRef.current?.click()
   }
-
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -58,59 +57,71 @@ export default function Importzone() {
         description: `Please drop a valid SQLite file`,
         duration: TOAST_DURATION,
         classNames: {
-          warning: "!bg-yellow-300/10 !text-black !font-is",
-          description: "!text-yellow-300/75"
-        }
+          warning: '!bg-yellow-300/10 !text-black !font-is',
+          description: '!text-yellow-300/75',
+        },
       })
     }
   }
 
-  const processFile = async (file: File) => {    
+  const processFile = async (file: File) => {
     try {
       const loadedDb = await loadDatabase(file)
-      
+
       if (!loadedDb) {
         toast.error('Load Database File', {
-          description: "Failed to load database file",
+          description: 'Failed to load database file',
           duration: TOAST_DURATION,
           classNames: {
-            error: "!bg-red-400/10 !text-black !font-is",
-              description: "!text-red-400/75"
-          }
+            error: '!bg-red-400/10 !text-black !font-is',
+            description: '!text-red-400/75',
+          },
         })
         return
       }
-      
+
       await runFullValidation(loadedDb)
-      
+
       const root = await navigator.storage.getDirectory()
 
-      const dbFileHandle = await root.getFileHandle(`${EXPECTED_STRUCTURE.database}.sqlite3`, {
-        create: true
-      })
+      const dbFileHandle = await root.getFileHandle(
+        `${EXPECTED_STRUCTURE.database}.sqlite3`,
+        {
+          create: true,
+        },
+      )
 
       const writable = await dbFileHandle.createWritable()
 
       await writable.write(await file.arrayBuffer())
       await writable.close()
 
-      toast.success("Database Imported",{
-        description: "Database imported successfully",
+      toast.success('Database Imported', {
+        description: 'Database imported successfully',
         duration: TOAST_DURATION,
         classNames: {
-          success: "!bg-violet-soft/10 !text-violet-soft !font-is",
-          description: "!text-violet-soft/75"
-        }
+          success: '!bg-violet-soft/10 !text-violet-soft !font-is',
+          description: '!text-violet-soft/75',
+        },
       })
-      navigate({to: "/history"});
+      navigate({
+        to: '/history',
+        search: {
+          page: 0,
+          pageSize: 10,
+          sort: 'timestamp',
+          dir: 'desc',
+          search: '',
+        },
+      })
     } catch (error) {
       toast.error('Error processing file', {
-        description: `An error occurred while processing the file: ${error instanceof Error ? error.message : "Internal Server Error"}`,
+        description: `An error occurred while processing the file: ${error instanceof Error ? error.message : 'Internal Server Error'}`,
         duration: TOAST_DURATION,
         classNames: {
-          error: "!bg-red-400/10 !black !font-is",
-          description: "!text-red-400/75"
-        }
+          error: '!bg-red-400/10 !black !font-is',
+          description: '!text-red-400/75',
+        },
       })
     }
   }

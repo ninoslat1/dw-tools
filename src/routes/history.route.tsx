@@ -1,11 +1,11 @@
-import HistoryTable from '@/components/HistoryTable'
-import type { THistorySearch, TSortColumn } from '@/types/page-query'
 import { createFileRoute } from '@tanstack/react-router'
+import type { THistorySearch, TSortColumn } from '@/types/page-query'
+import HistoryTable from '@/components/HistoryTable'
 
 export const Route = createFileRoute('/history')({
   component: HistoryComponent,
   validateSearch: (search): THistorySearch => {
-    const allowedColumns: TSortColumn[] = [
+    const allowedColumns: Array<TSortColumn> = [
       'timestamp',
       'imageUrl',
       'sourceFormat',
@@ -23,11 +23,9 @@ export const Route = createFileRoute('/history')({
       sort,
       dir: search.dir === 'asc' ? 'asc' : 'desc',
     }
-  }
+  },
 })
 
 function HistoryComponent() {
-  return (
-    <HistoryTable/>
-  ) 
+  return <HistoryTable />
 }

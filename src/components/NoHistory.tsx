@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 
 const NoHistory = () => {
   const navigate = useNavigate()
-  
+
   return (
     <div
       className={`p-12 text-center transition-colors bg-blue-soft/10 w-full min-h-screen`}
@@ -17,7 +17,10 @@ const NoHistory = () => {
       </p>
       <p className="text-sm font-is mb-6 text-muted-foreground">
         or import the SQLite file{' '}
-        <span onClick={() => navigate({to:"/import"})} className="underline hover:cursor-pointer">
+        <span
+          onClick={() => navigate({ to: '/import' })}
+          className="underline hover:cursor-pointer"
+        >
           here
         </span>
       </p>

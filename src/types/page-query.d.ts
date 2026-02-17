@@ -2,7 +2,7 @@ export type THistorySearch = {
   page: number
   pageSize: number
   search: string
-  sort: SortColumn
+  sort: TSortColumn
   dir: 'asc' | 'desc'
 }
 
@@ -11,4 +11,3 @@ export type TSortColumn =
   | 'imageUrl'
   | 'sourceFormat'
   | 'targetFormat'
-

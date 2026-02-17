@@ -58,9 +58,7 @@ export default function Hero() {
   font-is"
             asChild
           >
-            <a
-              href="#converter"
-            >
+            <a href="#converter">
               Start Converting <ArrowRight className="w-5 h-5" />
             </a>
           </Button>

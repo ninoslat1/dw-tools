@@ -50,11 +50,9 @@ export const conversionService = {
 
     const offset = pageIndex * pageSize
 
-    const filterValue = nameFilter
-      ? `%${nameFilter}%`
-      : null
+    const filterValue = nameFilter ? `%${nameFilter}%` : null
 
-      const baseQuery = `
+    const baseQuery = `
         SELECT
           uid,
           timestamp,
@@ -63,25 +61,15 @@ export const conversionService = {
           sourceFormat,
           targetFormat
         FROM image
-        ${nameFilter ? "WHERE imageUrl LIKE ?" : ""}
+        ${nameFilter ? 'WHERE imageUrl LIKE ?' : ''}
         ORDER BY ${sortColumn} ${sortDirection}
         LIMIT ?
         OFFSET ?;
         `
-        
-    const rows = nameFilter
-      ? await db.sql(
-          baseQuery,
-          filterValue,
-          pageSize,
-          offset
-        )
-      : await db.sql(
-          baseQuery,
-          pageSize,
-          offset
-        )
 
+    const rows = nameFilter
+      ? await db.sql(baseQuery, filterValue, pageSize, offset)
+      : await db.sql(baseQuery, pageSize, offset)
 
     const countResult = nameFilter
       ? await db.sql`

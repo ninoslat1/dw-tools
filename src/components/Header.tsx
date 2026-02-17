@@ -8,9 +8,7 @@ export default function Header() {
           <img src="/company-icon.svg" />
         </div>
 
-        <div className="flex items-center justify-center gap-5">
-          
-        </div>
+        <div className="flex items-center justify-center gap-5"></div>
 
         <div className="flex justify-end">
           <Link
