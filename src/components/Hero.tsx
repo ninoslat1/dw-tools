@@ -48,18 +48,18 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button
             size="lg"
-            className="bg-violet-soft text-primary-foreground hover:bg-violet-soft/90 gap-2 h-12"
+            className="max-w-sm
+  rounded-xl
+  border-violet-soft/20
+  focus-visible:ring-0
+  focus-visible:ring-offset-0
+  focus:shadow-none
+  focus:outline-none
+  font-is"
             asChild
           >
             <a
               href="#converter"
-              className="
-  bg-violet-soft text-white 
-  hover:bg-back
-  gap-2 h-12 rounded-full
-  font-is
-  shadow-md hover:shadow-lg transition
-"
             >
               Start Converting <ArrowRight className="w-5 h-5" />
             </a>

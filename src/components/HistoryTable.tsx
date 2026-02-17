@@ -3,9 +3,6 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { ArrowLeft, ChevronLeft, ChevronRight, DeleteIcon } from 'lucide-react'
@@ -16,7 +13,6 @@ import { Input } from './ui/input'
 import NoHistory from './NoHistory'
 import LoadingHistory from './LoadingHistory'
 import type {
-  ColumnFiltersState,
   PaginationState,
   SortingState,
 } from '@tanstack/react-table'
@@ -24,65 +20,91 @@ import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
 import { TOAST_DURATION } from '@/lib/format'
 import ExportButton from './ExportButton'
+import { Route } from '@/routes/history.route'
 
-const columnHelper = createColumnHelper<TRecord>()
 
 const HistoryTable = () => {
+  const columnHelper = createColumnHelper<TRecord>()
+  const searchParams = Route.useSearch()
+  const navigate = Route.useNavigate()
+
+  const { page, pageSize, search, sort, dir } = searchParams
   const [conversions, setConversions] = useState<Array<TRecord>>([])
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
   const [isLoading, setIsLoading] = useState(true)
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [nameFilter, setNameFilter] = useState('')
+  const [totalCount, setTotalCount] = useState(0)
+  const [inputValue, setInputValue] = useState(search)
+
+  useEffect(() => {
+    setInputValue(search)
+  }, [search])
+
+  const pagination: PaginationState = {
+    pageIndex: page,
+    pageSize,
+  }
+
+  const sorting: SortingState = [
+    {
+      id: sort,
+      desc: dir === 'desc',
+    },
+  ]
 
   const loadConversionHistory = useCallback(async () => {
     try {
-      const storedData = await conversionService.getConversion()
-        const processedHistory: Array<TRecord> = storedData.map((item: any) => {
-          let finalUrl = ''
-          let blob: Blob | null = null
+      setIsLoading(true)
 
-          if (item.imageBlob) {
-            try {
-              blob = new Blob([item.imageBlob], {
-                type: `image/${item.targetFormat.toLowerCase()}`,
-              })
-              finalUrl = URL.createObjectURL(blob)
-            } catch (e) {
-              console.error('Gagal membuat Blob URL:', e)
-            }
-          }
+      const { rows, total } =
+      await conversionService.getConversions({
+        pageIndex: page,
+        pageSize,
+        sortColumn: sort,
+        sortDirection: dir.toUpperCase(),
+        nameFilter: search,
+      })
 
-          const filename = `${item.imageUrl}`
 
-          return {
-            id: item.uid,
-            timestamp: new Date(item.timestamp).getTime(),
-            sourceFormat: item.sourceFormat,
-            targetFormat: item.targetFormat,
-            filename,
-            imageBlob: blob!,
-            imageUrl: finalUrl,
-          }
-        })
+      const processed = rows.map((item: any) => {
+        let finalUrl = ''
+        let blob: Blob | null = null
 
-        setConversions(processedHistory)
+        if (item.imageBlob) {
+          blob = new Blob([item.imageBlob], {
+            type: `image/${item.targetFormat.toLowerCase()}`,
+          })
+          finalUrl = URL.createObjectURL(blob)
+        }
+
+        return {
+          id: item.uid,
+          timestamp: new Date(item.timestamp).getTime(),
+          sourceFormat: item.sourceFormat,
+          targetFormat: item.targetFormat,
+          filename: item.imageUrl,
+          imageBlob: blob!,
+          imageUrl: finalUrl,
+        }
+      })
+
+      setConversions(processed)
+      setTotalCount(total)
+
     } catch (error) {
+      console.error(error)
       toast.warning('Error Load Conversion', {
         description: `Failed to load conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
         duration: TOAST_DURATION,
         classNames: {
           warning: "!bg-yellow-300/10 !text-black !font-is",
-          description: "!text-yellow-300/75"
+          description: "!text-black"
         }
       })
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [page, pageSize, sort, dir, search])
+
+
 
   const handleDelete = useCallback(async (id: string) => {
     try {
@@ -118,16 +140,6 @@ const HistoryTable = () => {
     }
   }, [])
 
-  const filteredConversions = useMemo(() => {
-    if (!nameFilter) return conversions
-
-    return conversions.filter((conversion) => {
-      return conversion.filename
-        .toLowerCase()
-        .includes(nameFilter.toLowerCase())
-    })
-  }, [conversions, nameFilter])
-
   const handleDownload = useCallback((record: TConversionRecord) => {
     const link = document.createElement('a')
     link.href = record.imageUrl
@@ -143,25 +155,49 @@ const HistoryTable = () => {
   )
 
   const table = useReactTable({
-    data: filteredConversions,
+    data: conversions,
     columns,
-    state: { sorting, pagination, columnFilters },
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  })
+    pageCount: Math.ceil(totalCount / pagination.pageSize),
+    state: { pagination, sorting },
+    manualPagination: true,
+    manualSorting: true,
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === 'function'
+          ? updater(pagination)
+          : updater
 
-  useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-  }, [nameFilter])
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          page: next.pageIndex,
+          pageSize: next.pageSize,
+        }),
+      })
+    },
+    onSortingChange: (updater) => {
+      const next =
+        typeof updater === 'function'
+          ? updater(sorting)
+          : updater
+
+      const first = next[0]
+
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          sort: first?.id ?? 'timestamp',
+          dir: first?.desc ? 'desc' : 'asc',
+        }),
+      })
+    },
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   useEffect(() => {
     loadConversionHistory()
   }, [loadConversionHistory])
+
 
   useEffect(() => {
     return () => {
@@ -177,7 +213,7 @@ const HistoryTable = () => {
     return <LoadingHistory />
   }
 
-  if (conversions.length === 0) {
+  if (!isLoading && totalCount === 0) {
     return <NoHistory />
   }
 
@@ -211,8 +247,19 @@ const HistoryTable = () => {
           <Input
             type="text"
             placeholder="Filter by file name..."
-            value={nameFilter}
-            onChange={(e) => setNameFilter(e.target.value)}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    search: inputValue,
+                    page: 0,
+                  }),
+                })
+              }
+            }}
             className="
   max-w-sm
   rounded-xl
@@ -225,19 +272,27 @@ const HistoryTable = () => {
 "
           />
 
-          {nameFilter && (
+          {search && (
             <div className="flex items-center justify-between w-full">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setNameFilter('')}
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      search: '',
+                      page: 0,
+                    }),
+                  })
+                }
                 className="text-blue-soft hover:bg-blue-soft/10 hover:text-blue-soft hover:cursor-pointer"
               >
                 Clear
               </Button>
 
               <div className="text-sm text-muted-foreground block">
-                Showing {filteredConversions.length} of {conversions.length}{' '}
+                Showing {conversions.length} of {totalCount}{' '}
                 results
               </div>
             </div>

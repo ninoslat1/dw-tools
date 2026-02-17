@@ -7,7 +7,7 @@ const NoHistory = () => {
   
   return (
     <div
-      className={`p-12 text-center transition-colors bg-violet-50 w-full min-h-screen`}
+      className={`p-12 text-center transition-colors bg-blue-soft/10 w-full min-h-screen`}
     >
       <h3 className="text-lg font-semibold font-dm py-2 text-violet-soft">
         No conversions yet
@@ -24,10 +24,13 @@ const NoHistory = () => {
 
       <Button
         className="
-                    bg-violet-soft text-white 
-                    hover:bg-violet-600 
-                    rounded-xl shadow-sm
-                    gap-2
+                    max-w-sm
+                    rounded-xl
+                    border-violet-soft/20
+                    focus-visible:ring-0
+                    focus-visible:ring-offset-0
+                    focus:shadow-none
+                    focus:outline-none
                     font-is
                 "
       >

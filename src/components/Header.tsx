@@ -15,6 +15,13 @@ export default function Header() {
         <div className="flex justify-end">
           <Link
             to="/history"
+            search={{
+              page: 0,
+              pageSize: 10,
+              search: '',
+              sort: 'timestamp',
+              dir: 'desc',
+            }}
             className="flex items-center gap-2 font-is text-violet-soft"
           >
             Images

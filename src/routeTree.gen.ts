@@ -12,8 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ImportRouteRouteImport } from './routes/import.route'
 import { Route as HistoryRouteRouteImport } from './routes/history.route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DocsIndexRouteImport } from './routes/docs/index'
-import { Route as DocsPageRouteImport } from './routes/docs/$page'
 
 const ImportRouteRoute = ImportRouteRouteImport.update({
   id: '/import',
@@ -30,53 +28,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DocsIndexRoute = DocsIndexRouteImport.update({
-  id: '/docs/',
-  path: '/docs/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsPageRoute = DocsPageRouteImport.update({
-  id: '/docs/$page',
-  path: '/docs/$page',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
   '/import': typeof ImportRouteRoute
-  '/docs/$page': typeof DocsPageRoute
-  '/docs': typeof DocsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
   '/import': typeof ImportRouteRoute
-  '/docs/$page': typeof DocsPageRoute
-  '/docs': typeof DocsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/history': typeof HistoryRouteRoute
   '/import': typeof ImportRouteRoute
-  '/docs/$page': typeof DocsPageRoute
-  '/docs/': typeof DocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history' | '/import' | '/docs/$page' | '/docs'
+  fullPaths: '/' | '/history' | '/import'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/history' | '/import' | '/docs/$page' | '/docs'
-  id: '__root__' | '/' | '/history' | '/import' | '/docs/$page' | '/docs/'
+  to: '/' | '/history' | '/import'
+  id: '__root__' | '/' | '/history' | '/import'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HistoryRouteRoute: typeof HistoryRouteRoute
   ImportRouteRoute: typeof ImportRouteRoute
-  DocsPageRoute: typeof DocsPageRoute
-  DocsIndexRoute: typeof DocsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -102,20 +82,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/docs/': {
-      id: '/docs/'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/$page': {
-      id: '/docs/$page'
-      path: '/docs/$page'
-      fullPath: '/docs/$page'
-      preLoaderRoute: typeof DocsPageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -123,8 +89,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HistoryRouteRoute: HistoryRouteRoute,
   ImportRouteRoute: ImportRouteRoute,
-  DocsPageRoute: DocsPageRoute,
-  DocsIndexRoute: DocsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

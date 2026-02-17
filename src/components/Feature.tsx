@@ -35,10 +35,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="
-  py-20 px-4 
-  bg-gradient-to-b from-background via-violet-soft/5 to-blue-soft/5
-  "
+      className="py-20 px-4 bg-gradient-to-b from-background via-violet-soft/5 to-blue-soft/5"
     >
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
@@ -69,6 +66,7 @@ export default function Features() {
   shadow-sm hover:shadow-md 
   hover:-translate-y-1
   transition-all duration-200
+  select-none
 "
             >
               <CardHeader>

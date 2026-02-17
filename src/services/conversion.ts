@@ -25,21 +25,79 @@ export const conversionService = {
       `
     })
   },
-
-  getConversion: () => {
+  getConversionCount: () => {
     const db = getSQLocal()
 
     return db.sql`
-      SELECT
-        uid,
-        timestamp,
-        imageUrl,
-        imageBlob,
-        sourceFormat,
-        targetFormat
-      FROM image
-      ORDER BY timestamp DESC;
+      SELECT COUNT(*) as total FROM image;
     `
+  },
+
+  getConversions: async ({
+    pageIndex,
+    pageSize,
+    sortColumn,
+    sortDirection,
+    nameFilter,
+  }: {
+    pageIndex: number
+    pageSize: number
+    sortDirection: string
+    sortColumn: string
+    nameFilter: string
+  }) => {
+    const db = getSQLocal()
+
+    const offset = pageIndex * pageSize
+
+    const filterValue = nameFilter
+      ? `%${nameFilter}%`
+      : null
+
+      const baseQuery = `
+        SELECT
+          uid,
+          timestamp,
+          imageUrl,
+          imageBlob,
+          sourceFormat,
+          targetFormat
+        FROM image
+        ${nameFilter ? "WHERE imageUrl LIKE ?" : ""}
+        ORDER BY ${sortColumn} ${sortDirection}
+        LIMIT ?
+        OFFSET ?;
+        `
+        
+    const rows = nameFilter
+      ? await db.sql(
+          baseQuery,
+          filterValue,
+          pageSize,
+          offset
+        )
+      : await db.sql(
+          baseQuery,
+          pageSize,
+          offset
+        )
+
+
+    const countResult = nameFilter
+      ? await db.sql`
+          SELECT COUNT(*) as total
+          FROM image
+          WHERE imageUrl LIKE ${filterValue};
+        `
+      : await db.sql`
+          SELECT COUNT(*) as total
+          FROM image;
+        `
+
+    return {
+      rows,
+      total: countResult[0]?.total ?? 0,
+    }
   },
 
   deleteConversion: (uid: string) => {
