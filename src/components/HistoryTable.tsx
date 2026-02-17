@@ -23,6 +23,7 @@ import type {
 import { conversionService } from '@/services/conversion'
 import { ConversionTableSchema } from '@/schemas/conversion'
 import { TOAST_DURATION } from '@/lib/format'
+import ExportButton from './ExportButton'
 
 const columnHelper = createColumnHelper<TRecord>()
 
@@ -72,7 +73,11 @@ const HistoryTable = () => {
     } catch (error) {
       toast.warning('Error Load Conversion', {
         description: `Failed to load conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          warning: "!bg-yellow-300/10 !text-black !font-is",
+          description: "!text-yellow-300/75"
+        }
       })
     } finally {
       setIsLoading(false)
@@ -97,13 +102,18 @@ const HistoryTable = () => {
           toast: 'gap-4',
           icon: 'mt-1',
           title: 'text-sm font-medium',
-          description: 'text-xs text-muted-foreground',
+          description: 'text-xs text-muted-foreground !text-violet-soft/75',
+          success: "!bg-violet-soft/10 !text-violet-soft !font-is",
         },
       })
     } catch (error) {
       toast.warning('Error Delete Conversion', {
         description: `Failed to delete conversion history: ${error instanceof Error ? error.message : "Internal Server Error"}`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          warning: "!bg-yellow-300/10 !text-black !font-is",
+          description: "!text-yellow-300/75"
+        }
       })
     }
   }, [])
@@ -211,6 +221,7 @@ const HistoryTable = () => {
   focus-visible:ring-offset-0
   focus:shadow-none
   focus:outline-none
+  font-is
 "
           />
 
@@ -231,9 +242,12 @@ const HistoryTable = () => {
               </div>
             </div>
           )}
+          <div className='ml-auto'>
+            <ExportButton/>
+          </div>
         </div>
 
-        <table className="w-full text-sm border-separate border-spacing-0">
+        <table className="w-full text-sm border-separate border-spacing-0 table-fixed">
           <thead className="border-b border-violet-soft/10 bg-violet-soft/5 font-is font-extrabold">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -263,8 +277,7 @@ const HistoryTable = () => {
                 <tr
                   key={row.id}
                   className="
-  border-b border-violet-soft/10 
-  hover:bg-violet-soft/5 
+  border-b border-violet-soft/10  
   transition-colors
 "
                 >
@@ -308,6 +321,7 @@ const HistoryTable = () => {
     border-violet-soft/30
     text-violet-soft
     hover:bg-violet-soft/10
+    hover:cursor-pointer
   "
           >
             <ChevronLeft className="w-4 h-4" />
@@ -320,9 +334,10 @@ const HistoryTable = () => {
             disabled={!table.getCanNextPage()}
             className="
     gap-1 rounded-xl
-    border-blue-soft/30
-    text-blue-soft
-    hover:bg-blue-soft/10
+    border-violet-soft/30
+    text-violet-soft
+    hover:bg-violet-soft/10
+    hover:cursor-pointer
   "
           >
             Next

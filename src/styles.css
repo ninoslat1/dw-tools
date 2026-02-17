@@ -124,8 +124,10 @@ code {
     }
   }
 
-  --color-violet-soft: #7f62f5;
-  --color-blue-soft: #447df6;
+  /* --color-violet-soft: #7f62f5;
+  --color-blue-soft: #447df6; */
+  --color-violet-soft: #000000;
+  --color-blue-soft: #929292;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

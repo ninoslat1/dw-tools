@@ -31,7 +31,7 @@ const NoHistory = () => {
                     font-is
                 "
       >
-        <Link to="/" className="flex items-center gap-5">
+        <Link to="/" hash="converter" className="flex items-center gap-5">
           <ArrowRight className="w-4 h-4" />
           Start Converting
         </Link>

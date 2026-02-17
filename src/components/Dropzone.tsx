@@ -164,7 +164,11 @@ export default function Dropzone() {
       // alert('Failed to convert image. Please try again.')
       toast.error('Fail Convert Image', {
         description: `Failed to convert image: ${error instanceof Error ? error.message : "Internal Server Error"}`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          warning: "!bg-red-400/10 !text-black !font-is",
+          description: "!text-red-400/75"
+        }
       })
       setTargetProgress(0)
     } finally {
@@ -176,7 +180,7 @@ export default function Dropzone() {
     <section
       className="
         py-20 h-[850px] px-4 
-        bg-gradient-to-b from-violet-soft/10 via-blue-soft/5 to-background
+        bg-blue-soft/5
         "
       id="converter"
     >
@@ -380,7 +384,7 @@ export default function Dropzone() {
                   variant={'outline'}
                   className="
   bg-violet-soft text-white 
-  hover:bg-violet-600 
+  hover:bg-black 
   rounded-xl
   shadow-md hover:shadow-lg
   hover:text-white

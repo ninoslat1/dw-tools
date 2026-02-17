@@ -55,8 +55,8 @@ export default function Hero() {
               href="#converter"
               className="
   bg-violet-soft text-white 
-  hover:bg-violet-600 
-  gap-2 h-12 rounded-
+  hover:bg-back
+  gap-2 h-12 rounded-full
   font-is
   shadow-md hover:shadow-lg transition
 "
@@ -76,7 +76,7 @@ export default function Hero() {
           </div>
 
           <div>
-            <div className="text-2xl md:text-3xl font-bold text-blue-soft/70">
+            <div className="text-2xl md:text-3xl font-bold text-violet-soft/70">
               ∞
             </div>
 

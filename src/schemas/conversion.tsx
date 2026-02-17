@@ -10,6 +10,7 @@ export const ConversionTableSchema = (
   const columns = [
     columnHelper.accessor('filename', {
       header: 'File Name',
+      size: 350,
       cell: (info) => {
         const row = info.row.original
         return (

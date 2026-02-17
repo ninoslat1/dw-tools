@@ -44,7 +44,7 @@ export default function Features() {
         <div className="text-center mb-16">
           <h2
             className="
-  text-4xl md:text-5xl font-bold mb-4 
+  text-4xl md:text-5xl font-bold py-2 
   bg-gradient-to-r from-violet-soft to-blue-soft 
   bg-clip-text text-transparent font-dm
   "

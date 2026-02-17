@@ -56,7 +56,11 @@ export default function Importzone() {
     } else {
       toast.warning('File Process Failed', {
         description: `Please drop a valid SQLite file`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          warning: "!bg-yellow-300/10 !text-black !font-is",
+          description: "!text-yellow-300/75"
+        }
       })
     }
   }
@@ -68,7 +72,11 @@ export default function Importzone() {
       if (!loadedDb) {
         toast.error('Load Database File', {
           description: "Failed to load database file",
-          duration: TOAST_DURATION
+          duration: TOAST_DURATION,
+          classNames: {
+            error: "!bg-red-400/10 !text-black !font-is",
+              description: "!text-red-400/75"
+          }
         })
         return
       }
@@ -88,13 +96,21 @@ export default function Importzone() {
 
       toast.success("Database Imported",{
         description: "Database imported successfully",
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          success: "!bg-violet-soft/10 !text-violet-soft !font-is",
+          description: "!text-violet-soft/75"
+        }
       })
       navigate({to: "/history"});
     } catch (error) {
       toast.error('Error processing file', {
         description: `An error occurred while processing the file: ${error instanceof Error ? error.message : "Internal Server Error"}`,
-        duration: TOAST_DURATION
+        duration: TOAST_DURATION,
+        classNames: {
+          error: "!bg-red-400/10 !black !font-is",
+          description: "!text-red-400/75"
+        }
       })
     }
   }

@@ -17,7 +17,7 @@ export default function Header() {
             to="/history"
             className="flex items-center gap-2 font-is text-violet-soft"
           >
-            History
+            Images
           </Link>
         </div>
       </nav>
