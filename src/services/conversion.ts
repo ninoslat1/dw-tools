@@ -25,13 +25,6 @@ export const conversionService = {
       `
     })
   },
-  getConversionCount: () => {
-    const db = getSQLocal()
-
-    return db.sql`
-      SELECT COUNT(*) as total FROM image;
-    `
-  },
 
   getConversions: async ({
     pageIndex,

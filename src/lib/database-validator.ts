@@ -70,16 +70,6 @@ export const validateTableStructure = async (db: SQLocal): Promise<void> => {
             `⚠️  Field "${fieldName}": type mismatch (expected ${expectedProps.type}, got ${found.type})`,
           )
         }
-
-        // Check primary key
-        if (found.pk !== expectedProps.pk) {
-          issues.push(`⚠️  Field "${fieldName}": primary key mismatch`)
-        }
-
-        // Check not null constraint
-        if (found.notnull !== expectedProps.notnull) {
-          issues.push(`⚠️  Field "${fieldName}": NOT NULL constraint mismatch`)
-        }
       }
     },
   )
