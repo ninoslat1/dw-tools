@@ -224,7 +224,7 @@ const HistoryTable = () => {
     return <LoadingHistory />
   }
 
-  if (!isLoading && totalCount === 0) {
+  if (!isLoading && totalCount === 0 && search === "") {
     return <NoHistory />
   }
 
