@@ -1,0 +1,30 @@
+---
+const query = new URLSearchParams({
+  page: "0",
+  pageSize: "10",
+  search: "",
+  sort: "timestamp",
+  dir: "desc",
+}).toString()
+---
+
+<header class="fixed top-0 w-full bg-background/50 backdrop-blur-sm border-b border-border z-50">
+  <nav class="max-w-6xl mx-auto px-4 py-4 grid grid-cols-3 items-center">
+    
+    <div>
+      <img src="/company-icon.svg" alt="Company Logo" />
+    </div>
+
+    <div class="flex items-center justify-center gap-5"></div>
+
+    <div class="flex justify-end">
+      <a
+        href={`/history?${query}`}
+        class="flex items-center gap-2 font-is text-dark"
+      >
+        Images
+      </a>
+    </div>
+
+  </nav>
+</header>

@@ -1,23 +1,73 @@
+---
+import "@/styles/global.css"
+export interface Props {
+  title: string
+  description: string
+  image?: string
+  noindex?: boolean
+}
+
+const {
+  title,
+  description,
+  image = "/og-image.png",
+  noindex = false
+} = Astro.props
+
+const siteUrl = "https://dw-tools.vercel.app"
+const canonical = new URL(Astro.url.pathname, siteUrl).toString()
+const ogImage = new URL(image, siteUrl).toString()
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.ico" />
+
+	<script is:inline type="application/ld+json">
+		{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "SoftwareApplication",
+			name: "PicX",
+			description,
+			applicationCategory: "ImageApplication",
+			operatingSystem: "Web",
+			url: canonical,
+			offers: {
+			"@type": "Offer",
+			price: "0",
+			priceCurrency: "USD" | "IDR"
+			}
+		})}
+	</script>
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>
