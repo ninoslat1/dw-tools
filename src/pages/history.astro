@@ -1,0 +1,10 @@
+---
+import HistoryTable from "@/components/react/HistoryTable";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout
+    title="Image List | PicX — Fast & Private Image Converter"
+  	description="List of all of your converted image">
+    <HistoryTable client:load/>
+</Layout>
