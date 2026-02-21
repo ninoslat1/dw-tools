@@ -1,5 +1,6 @@
 ---
 import Importzone from '@/components/react/Importzone';
+import { Toaster } from '@/components/ui/sonner';
 import Layout from '@/layouts/Layout.astro';
 ---
 
@@ -7,5 +8,6 @@ import Layout from '@/layouts/Layout.astro';
 	title="Imports | PicX — Fast & Private Image Converter"
   	description="Imports your dwimgconv database for backup"
 >
+    <Toaster client:idle/>
 	<Importzone client:load/>
 </Layout>

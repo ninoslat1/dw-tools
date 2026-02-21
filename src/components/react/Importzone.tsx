@@ -110,7 +110,7 @@ export default function Importzone() {
           description: '!text-dark/75',
         },
       })
-      window.location.href = `/history?${params.toString()}`
+      window.location.href = `/converter/history?${params.toString()}`
     } catch (error) {
       toast.error('Error processing file', {
         description: `An error occurred while processing the file: ${error instanceof Error ? error.message : 'Internal Server Error'}`,

@@ -1,10 +1,12 @@
 ---
 import HistoryTable from "@/components/react/HistoryTable";
+import { Toaster } from "@/components/ui/sonner";
 import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout
     title="Image List | PicX — Fast & Private Image Converter"
   	description="List of all of your converted image">
+    <Toaster client:idle/>
     <HistoryTable client:load/>
 </Layout>
