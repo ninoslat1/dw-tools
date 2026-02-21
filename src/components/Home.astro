@@ -1,0 +1,111 @@
+---
+import { Code2, ImageIcon, Hash, Zap, Database, RotateCw, ArrowRight, DollarSign, AlertCircle } from "lucide-react";
+import Footer from "./Footer.astro";
+
+const features = [
+  {
+    icon: ImageIcon,
+    name: "Image Converter",
+    description: "Convert PNG, JPG, and WebP images online in seconds. No quality loss, no upload required.",
+    url: "/converter"
+  },
+//   {
+//     icon: Hash,
+//     name: "Hash Generator",
+//     description: "Generate MD5, SHA-1, SHA-256, and other hash values",
+//   },
+//   {
+//     icon: Code2,
+//     name: "Code Formatter",
+//     description: "Format and beautify JSON, XML, and other code formats",
+//   },
+//   {
+//     icon: Zap,
+//     name: "Performance Tools",
+//     description: "Minify, compress, and optimize your assets",
+//   },
+//   {
+//     icon: Database,
+//     name: "Data Utilities",
+//     description: "Convert between Base64, Hex, and other data formats",
+//   },
+//   {
+//     icon: RotateCw,
+//     name: "Quick Transform",
+//     description: "URL encode/decode, escape/unescape strings in seconds",
+//   },
+];
+---
+
+<div class="bg-linear-to-b from-dark/10 via-gray/5 to-background min-h-screen text-foreground">
+  <section class="relative overflow-hidden pt-20 px-4">
+    <div class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 relative z-10">
+        <div class="text-center mb-20">
+
+        <div class="flex flex-wrap justify-center gap-4 mb-6">
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <Zap className="w-4 h-4 text-gray" />
+                Instant Processing
+            </span>
+            </div>
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <DollarSign className="w-4 h-4 text-gray" />
+                Completely Free
+            </span>
+            </div>
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <AlertCircle className="w-4 h-4 text-gray" />
+                Private & Secure
+            </span>
+            </div>
+
+        </div>
+
+        <h1 class="font-dm text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight py-3">
+            DigiWorks QoL
+        </h1>
+
+        <h2 class="font-is text-md sm:text-lg lg:text-xl font-semibold tracking-tighter py-3">
+            All Your Developer Utilities in One Place
+        </h2>
+
+        <p class="text-xl font-is text-muted-foreground max-w-2xl mx-auto mb-10">
+            Convert images, generate hashes, format code, and transform data instantly —
+            all directly in your browser. No installation. No sign-up. 100% free.
+        </p>
+
+        </div>
+
+      <div id="features" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-20">
+        {features.map((feature) => {
+          const Icon = feature.icon;
+          return (
+            <div class="p-6 rounded-lg border border-border bg-card hover:bg-muted/5 transition-colors group cursor-pointer">
+                <a href=`${feature.url}`>
+                    <div class="flex items-start gap-4">
+                      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-foreground mb-2">{feature.name}</h3>
+                        <p class="text-sm text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <Footer/>
+</div>

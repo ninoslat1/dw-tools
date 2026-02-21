@@ -16,7 +16,7 @@ const NoHistory = () => {
       <p className="text-sm font-is mb-6 text-muted-foreground">
         or import the SQLite file{' '}
         <span
-          onClick={() => window.location.href = "/import"}
+          onClick={() => window.location.href = "/converter/import"}
           className="underline hover:cursor-pointer"
         >
           here

@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Zap } from 'lucide-react'
+import { AlertCircle, ArrowRight, DollarSign, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 --- 
  
@@ -12,18 +12,29 @@ import { Button } from '@/components/ui/button'
       id="#hero"
     >
       <div class="max-w-4xl mx-auto text-center">
-        <div
-          class="
-          inline-flex items-center mb-6 px-4 py-2 
-          bg-white/60 backdrop-blur-sm
-          border border-dark/20
-          rounded-full shadow-sm
-          "
-        >
-          <span class="font-medium text-sm flex items-center gap-2 text-dark">
-            <Zap className="w-4 h-4 text-gray" />
-            No uploads • 100% private
-          </span>
+        <div class="flex flex-wrap justify-center gap-4 mb-6">
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <Zap className="w-4 h-4 text-gray" />
+                Instant Processing
+            </span>
+            </div>
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <DollarSign className="w-4 h-4 text-gray" />
+                Completely Free
+            </span>
+            </div>
+
+            <div class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-dark/20 rounded-full shadow-sm">
+            <span class="font-medium text-sm flex items-center gap-2 text-dark">
+                <AlertCircle className="w-4 h-4 text-gray" />
+                Private & Secure
+            </span>
+            </div>
+
         </div>
 
         <h1

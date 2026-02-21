@@ -1,19 +1,13 @@
 ---
-import Hero from '@/components/Hero.astro';
-import Header from '@/components/Header.astro';
-import Layout from '@/layouts/Layout.astro';
-import Feature from '@/components/Feature.astro';
-import Footer from '@/components/Footer.astro';
-import Dropzone from '@/components/react/Dropzone';
+import Header from "@/components/Header.astro";
+import Home from "@/components/Home.astro";
+import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout
-	title="PicX — Fast & Private Image Converter"
-  	description="Convert images instantly in your browser. No uploads. No tracking."
+	title="DigiWorks Online Tools"
+  	description="Online Developer QoL tools built by DigiWorks"
 >
-	<Header/>
-	<Hero/>
-	<Feature/>
-	<Dropzone client:visible/>
-	<Footer/>
+    <Header/>
+	<Home/>
 </Layout>

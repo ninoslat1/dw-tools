@@ -1,0 +1,36 @@
+---
+import Hero from '@/components/Hero.astro';
+import Header from "@/components/Header.astro"
+
+const query = new URLSearchParams({
+  page: "0",
+  pageSize: "10",
+  search: "",
+  sort: "timestamp",
+  dir: "desc",
+}).toString()
+
+import Layout from '@/layouts/Layout.astro';
+import Feature from '@/components/Feature.astro';
+import Footer from '@/components/Footer.astro';
+import Dropzone from '@/components/react/Dropzone';
+---
+
+<Layout
+	title="PicX — Fast & Private Image Converter"
+  	description="Convert images instantly in your browser. No uploads. No tracking."
+>
+	<Header>
+		<a
+			slot="right"
+			href={`/converter/history?${query}`}
+			class="flex items-center gap-2 font-is text-dark"
+		>
+			Images
+		</a>
+	</Header>
+	<Hero/>
+	<Feature/>
+	<Dropzone client:visible/>
+	<Footer/>
+</Layout>
